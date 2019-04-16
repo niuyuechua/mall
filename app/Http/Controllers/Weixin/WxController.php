@@ -19,7 +19,7 @@ class WxController extends Controller
         $time=date('Y-m-d H:i:s');
         $str=$content.$time."/n";
         file_put_contents('logs/wx_event.log',$str,FILE_APPEND);
-        echo 'success';
+        echo 'SUCCESS';
     }
     public function test(){
         $token=$this->getAccessToken();
