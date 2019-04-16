@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Weixin;
 
 use Illuminate\Http\Request;
-use IIlluminate\Support\Facades\Redis;
+use IIluminate\Support\Facades\Redis;
 use App\Http\Controllers\Controller;
 
 class WxController extends Controller
