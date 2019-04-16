@@ -20,6 +20,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //'http://39.107.78.144/cart/returnPay',
-        'cart/returnPay',
+        'wx/valid',
     ];
 }
