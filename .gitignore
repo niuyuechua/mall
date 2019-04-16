@@ -12,6 +12,6 @@ yarn-error.log
 .idea
 *.log
 /public/logs
-/public/weixin/voice
 /public/weixin/image
+/public/weixin/voice
 /storage/weixin/logs
