@@ -17,7 +17,7 @@ class WxController extends Controller
         //接收微信服务器推送通知
         $content=file_get_contents('php://input');      //xml数据
         $time=date('Y-m-d H:i:s');
-        $str=$content.$time."/n";
+        $str=$time.$content."\n";
         file_put_contents('logs/wx_event.log',$str,FILE_APPEND);
         echo 'SUCCESS';
     }
