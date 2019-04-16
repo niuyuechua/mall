@@ -20,6 +20,7 @@ Route::get('/info',function(){
 });
 
 //微信公众平台
-Route::get('wx/valid','Weixin/WxController@valid');
+Route::get('wx/valid','Weixin\WxController@valid');
+
 
 
