@@ -9,9 +9,10 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+
 .idea
 *.log
 /public/logs
 /public/weixin/image
 /public/weixin/voice
-/storage/weixin/logs
+/storage/logs
