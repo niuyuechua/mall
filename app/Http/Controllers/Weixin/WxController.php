@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Weixin;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
+use App\WxUserModel;
 use App\Http\Controllers\Controller;
 
 class WxController extends Controller
@@ -19,7 +20,41 @@ class WxController extends Controller
         $time=date('Y-m-d H:i:s');
         $str=$time.$content."\n";
         file_put_contents('logs/wx_event.log',$str,FILE_APPEND);
-        echo 'SUCCESS';
+        //echo 'SUCCESS';
+        $obj=simplexml_load_string($content);       //将xml数据转化成数组
+        $kf_id = $obj->ToUserName;
+        $openid=$obj->FromUserName;
+        $event=$obj->Event;
+        if($event=='subscribe'){
+            $userInfo=WxUserModel::where('openid','=',"$openid")->first();
+            if($userInfo){
+                echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>.time().</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA['.'欢迎回来'.$userInfo['nickname'].']]></Content>
+                       </xml>';
+            }else{
+                //获取新用户信息
+                $info = $this->getUserInfo($openid);//对象格式
+                //用户信息入库
+                $data=[
+                    'openid'=>$info->openid,
+                    'nickname'=>$info->nickname,
+                    'sex'=>$info->sex,
+                    'headimgurl'=>$info->headimgurl,
+                    'subscribe_time'=>$info->subscribe_time
+                ];
+                $res = WxUserModel::insert($data);
+                echo '<xml>
+                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>'.time().'</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA['.'欢迎关注'. $info->nickname .']]></Content>
+                          </xml>';
+            }
+        }
     }
     public function test(){
         $token=$this->getAccessToken();
@@ -38,9 +73,17 @@ class WxController extends Controller
             $arr=json_decode($response,true);       //将json字符串转化成数组
             //做缓存
             Redis::set($key,$arr['access_token']);
-            Redis::expire($key,30); //设置时间（30分钟）
+            Redis::expire($key,3600); //设置时间（30）
             $data=$arr['access_token'];
         }
         return $data;
     }
+    //获取新用户信息
+    public function getUserInfo($openid){
+        $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".$this->getAccessToken()."&openid=".$openid."&lang=zh_CN";
+        $data=file_get_contents($url);
+        $u=json_decode($data);
+        return $u;
+    }
+
 }
