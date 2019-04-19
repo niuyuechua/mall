@@ -21,9 +21,11 @@ class WxController extends Controller
         $str=$time.$content."\n";
         file_put_contents('logs/wx_event.log',$str,FILE_APPEND);
         //echo 'SUCCESS';
-        $obj=simplexml_load_string($content);       //将xml数据转化成数组
+        $obj=simplexml_load_string($content);       //将xml数据转化成对象
+        //dump($obj);die;
         $kf_id = $obj->ToUserName;
         $openid=$obj->FromUserName;
+        //echo $openid;die;
         $event=$obj->Event;
         if($event=='subscribe'){
             $userInfo=WxUserModel::where('openid','=',"$openid")->first();
