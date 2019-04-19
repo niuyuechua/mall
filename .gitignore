@@ -16,3 +16,4 @@ yarn-error.log
 /public/weixin/image
 /public/weixin/voice
 /storage/logs
+*.rdb
