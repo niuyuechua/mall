@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class WxPayController extends Controller
 {
     public $weixin_unifiedorder_url='https://api.mch.weixin.qq.com/pay/unifiedorder';   //统一下单接口地址
-    public $weixin_notify_url='http://1809niuyuechyuang.comcto.com/weixin/pay/notice';       //支付通知回调地址
+    public $weixin_notify_url='http://1809niuyuechyuang.comcto.com/pay/notice';       //支付通知回调地址
 
     //获取并处理订单信息（商户后台），请求下单接口，获取响应数据
     public function test(){
@@ -153,8 +153,8 @@ class WxPayController extends Controller
         $data = file_get_contents("php://input");
         //记录日志
         $log_str = date('Y-m-d H:i:s') . "\n" . $data . "\n<<<<<<<";
-        file_put_contents('logs/wx_pay_notice.log',$log_str,FILE_APPEND);
-        $xml = simplexml_load_string($data);
+        file_put_contents('logs/w;x_pay_notice.log',$log_str,FILE_APPEND);
+        $xml = simplexml_load_string($data)
         if($xml->result_code=='SUCCESS' && $xml->return_code=='SUCCESS'){      //微信支付成功回调
             //验证签名
             $sign = true;
