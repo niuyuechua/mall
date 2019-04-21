@@ -26,4 +26,4 @@ Route::get('wx/test','Weixin\WxController@test');
 Route::post('wx/valid','Weixin\WxController@wxEvent');
 //支付
 Route::get('pay/test','Weixin\WxPayController@test');
-Route::get('pay/notice','Weixin\WxPayController@notice');
+Route::post('pay/notice','Weixin\WxPayController@notice');
