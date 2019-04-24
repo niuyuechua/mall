@@ -74,7 +74,7 @@ class WxController extends Controller
                           <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                           <CreateTime>'.time().'</CreateTime>
                           <MsgType><![CDATA[news]]></MsgType>
-                          <ArticleCount>5</ArticleCount>
+                          <ArticleCount>1</ArticleCount>
                           <Articles>
                             <item>
                               <Title><![CDATA[最新商品]]></Title>
