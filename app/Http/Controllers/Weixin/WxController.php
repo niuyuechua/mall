@@ -196,4 +196,12 @@ class WxController extends Controller
 //        }
     }
 
+    //微信网页授权
+    public function authorization(){
+        //$url="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+    }
+    //授权回调
+    public function getUinfo(){
+
+    }
 }
