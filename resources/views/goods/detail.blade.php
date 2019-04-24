@@ -110,10 +110,18 @@
                 link: '1809niuyuechyuang.comcto.com ', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                 imgUrl: "http://1809niuyuechyuang.comcto.com/goodsimg/{{$goods['goods_img']}}", // 分享图标
                 success: function () {
-                    // 设置成功
+                    alert('分享成功');
                 }
             })
 
+            wx.updateTimelineShareData({
+                title: '最新商品', // 分享标题
+                link: '1809niuyuechyuang.comcto.com', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: 'http://1809niuyuechyuang.comcto.com/goodsimg/{{$goods['goods_img']}}', // 分享图标
+                success: function () {
+                    alert('分享成功');
+                }
+            })
     });
 </script>
 </body>
