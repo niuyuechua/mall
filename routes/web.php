@@ -24,9 +24,12 @@ Route::get('wx/valid','Weixin\WxController@valid');
 Route::get('wx/getAccessToken','Weixin\WxController@getAccessToken');
 Route::get('wx/test','Weixin\WxController@test');
 Route::post('wx/valid','Weixin\WxController@wxEvent');
+//图文消息详情
 Route::get('wx/goodsDetail','Weixin\WxController@goodsDetail');
 //自定义菜单
 Route::get('wx/createMent','Weixin\WxController@createMent');
 //支付
 Route::get('pay/test','Weixin\WxPayController@test');
 Route::post('pay/notice','Weixin\WxPayController@notice');
+//计划任务
+Route::get('crontab/del','crontab\CrontabController@del');

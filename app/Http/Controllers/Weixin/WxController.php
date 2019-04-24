@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
 use App\GoodsModel;
+use Illuminate\Support\Str;
 
 class WxController extends Controller
 {
@@ -90,14 +91,40 @@ class WxController extends Controller
             }
         }
     }
+    //商品详情
     public function goodsDetail(){
         $goods_id=$_GET['goods_id'];
         //echo $goods_id;die;
         $goods=GoodsModel::where(['goods_id'=>$goods_id])->first()->toArray();
+        $js_config=$this->getConfig();
         $data=[
-            'goods'=>$goods
+            'goods'=>$goods,
+            'js_config'=>$js_config
         ];
         return view('goods.detail',$data);
+    }
+    //获取config接口参数值
+    public function getConfig(){
+        //获取生成签名的参数
+        $ticket=getTicket();
+        //echo $ticket;
+        $nonceStr=Str::random(10);
+        $timestamp=time();
+        $current_url=$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        //echo $current_url;die;
+        //生成签名
+        $string1="jsapi_ticket=$ticket&noncestr=$nonceStr&timestamp=$timestamp&url=$current_url";
+        //echo $string1;die;
+        $signature=sha1($string1);
+        //echo $signature;
+
+        $js_config=[
+            'appId'=>env('WX_APP_ID'),  //公众号APPID
+            'timestamp'=>$timestamp,    //时间戳
+            'nonceStr'=>$nonceStr,     //随机字符串
+            'signature'=>$signature,    //签名
+        ];
+        return $js_config;
     }
     public function test(){
         $token=$this->getAccessToken();

@@ -86,10 +86,35 @@
         <img src="http://1809niuyuechyuang.comcto.com/goodsimg/{{$goods['goods_img']}}" alt=""> <hr>
         名称：{{$goods['goods_name']}} <br>
         价格：{{$goods['goods_price']}}
+
         <div class="links">
 
         </div>
     </div>
 </div>
+<script src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+<script src="/js/jquery/jquery-3.1.1.min.js"></script>
+<script>
+    wx.config({
+        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: "{{$js_config['appId']}}", // 必填，公众号的唯一标识
+        timestamp:"{{$js_config['timestamp']}}" , // 必填，生成签名的时间戳
+        nonceStr: "{{$js_config['nonceStr']}}", // 必填，生成签名的随机串
+        signature: "{{$js_config['signature']}}",// 必填，签名
+        jsApiList: ['chooseImage','uploadImage'] // 必填，需要使用的JS接口列表
+    });
+    wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+            wx.updateAppMessageShareData({
+                title: '最新商品', // 分享标题
+                desc: '啦啦啦', // 分享描述
+                link: '1809niuyuechyuang.comcto.com ', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: "http://1809niuyuechyuang.comcto.com/goodsimg/{{$goods['goods_img']}}", // 分享图标
+                success: function () {
+                    // 设置成功
+                }
+            })
+
+    });
+</script>
 </body>
 </html>
