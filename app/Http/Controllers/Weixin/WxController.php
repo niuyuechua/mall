@@ -8,6 +8,7 @@ use App\WxUserModel;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
+use App\GoodsModel;
 
 class WxController extends Controller
 {
@@ -25,8 +26,10 @@ class WxController extends Controller
         //echo 'SUCCESS';
         $obj=simplexml_load_string($content);       //将xml数据转化成对象
         //dump($obj);die;
-        $kf_id = $obj->ToUserName;
-        $openid=$obj->FromUserName;
+        $kf_id = $obj->ToUserName;  //公众号ID
+        $openid=$obj->FromUserName; //用户ID
+        $event=$obj->Event;    //事件类型
+        $msg_type=$obj->MsgType;    //消息类型
         //echo $openid;die;
         $event=$obj->Event;
         if($event=='subscribe'){
@@ -59,6 +62,40 @@ class WxController extends Controller
                           </xml>';
             }
         }
+        if($msg_type=='text'){
+            if($obj->Content=='最新商品'){
+                $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
+                //$url="https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$this->getAccessToken()."&type=image";
+                foreach($goods as $k=>$v){
+                    $img=$v['goods_img'];
+                    $picurl="../storage/app/goodsimg/".$img;
+                    $res='<xml>
+                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                          <CreateTime>'.time().'</CreateTime>
+                          <MsgType><![CDATA[news]]></MsgType>
+                          <ArticleCount>1</ArticleCount>
+                          <Articles>
+                            <item>
+                              <Title><![CDATA[最新商品]]></Title>
+                              <Description><![CDATA[啦啦啦]]></Description>
+                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
+                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
+                            </item>
+                          </Articles>
+                        </xml>';
+                    echo $res;
+                }
+
+            }
+        }
+    }
+    public function goodsDetail($goods_id){
+        $goods=GoodsModel::where(['goods_id'=>$goods_id])->first()->toArray();
+        $data=[
+            'goods'=>$goods
+        ];
+        return view('goods.detail',$data);
     }
     public function test(){
         $token=$this->getAccessToken();
