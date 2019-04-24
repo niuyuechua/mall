@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use App\WxUserModel;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Uri;
 
 class WxController extends Controller
 {
@@ -86,6 +88,46 @@ class WxController extends Controller
         $data=file_get_contents($url);
         $u=json_decode($data);
         return $u;
+    }
+
+    //菜单
+    public function createMent(){
+        //url
+        $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->test();
+        //dump($url);die;
+
+        //接口数据
+        $post_arr=[
+            'button' => [
+                [
+                    'type'=>'click',
+                    'name'=>'今日歌曲',
+                    'key'=>'V1001_TODAY_MUSIC',
+                ],
+                [
+                    'type'=>'click',
+                    'name'=>'1809A',
+                    'key'=>'V1001_TODAY_MUSIA',
+                ],
+            ],
+        ];
+        $json_str=json_encode($post_arr, JSON_UNESCAPED_UNICODE);
+        //dd($json_str);die;
+        //请求接口
+        $client= new Client();
+        $responce=$client->request('POST',$url,[
+            'body'=>$json_str
+        ]);
+        //dd($responce);die;
+        //处理响应
+        $res_str=$responce->getBody();
+        echo $res_str;
+        //判断错误信息
+//        if($res_str>['errcode']>0){
+//
+//        }else{
+//            echo '错误';
+//        }
     }
 
 }

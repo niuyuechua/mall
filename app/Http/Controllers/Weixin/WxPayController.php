@@ -18,7 +18,7 @@ class WxPayController extends Controller
         $total_fee=1;       //用户要支付的总金额
         //$order_id=OrderModel::generateOrderSN();
         $order_id=time().mt_rand(1111,9999).'niuyuechuang';     //测试订单号，随机生成
-        $order_info=[
+            $order_info=[
             'appid'         =>  env('WEIXIN_APPID_0'),      //微信支付绑定的服务号的APPID
             'mch_id'        =>  env('WEIXIN_MCH_ID'),       // 商户ID
             'nonce_str'     => Str::random(16),              // 随机字符串
