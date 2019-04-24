@@ -92,7 +92,7 @@ class WxController extends Controller
     }
     public function goodsDetail(){
         $goods_id=$_GET['goods_id'];
-        echo $goods_id;die;
+        //echo $goods_id;die;
         $goods=GoodsModel::where(['goods_id'=>$goods_id])->first()->toArray();
         $data=[
             'goods'=>$goods
