@@ -68,13 +68,13 @@ class WxController extends Controller
                 //$url="https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$this->getAccessToken()."&type=image";
                 foreach($goods as $k=>$v){
                     $img=$v['goods_img'];
-                    $picurl="../storage/app/goodsimg/".$img;
+                    $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
                     $res='<xml>
                           <ToUserName><![CDATA['.$openid.']]></ToUserName>
                           <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                           <CreateTime>'.time().'</CreateTime>
                           <MsgType><![CDATA[news]]></MsgType>
-                          <ArticleCount>1</ArticleCount>
+                          <ArticleCount>5</ArticleCount>
                           <Articles>
                             <item>
                               <Title><![CDATA[最新商品]]></Title>
