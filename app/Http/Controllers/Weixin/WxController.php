@@ -93,7 +93,7 @@ class WxController extends Controller
     //菜单
     public function createMent(){
         //url
-        $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->test();
+        $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->getAccessToken();
         //dump($url);die;
 
         //接口数据
