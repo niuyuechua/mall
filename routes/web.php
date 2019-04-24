@@ -25,7 +25,7 @@ Route::get('wx/getAccessToken','Weixin\WxController@getAccessToken');
 Route::get('wx/test','Weixin\WxController@test');
 Route::post('wx/valid','Weixin\WxController@wxEvent');
 //自定义菜单
-Route::get('wx/creatMent','Weixin\WxController@creatMent');
+Route::get('wx/createMent','Weixin\WxController@createMent');
 //支付
 Route::get('pay/test','Weixin\WxPayController@test');
 Route::post('pay/notice','Weixin\WxPayController@notice');
