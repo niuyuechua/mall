@@ -84,7 +84,7 @@
 
         </div>
         <img src="http://1809niuyuechyuang.comcto.com/goodsimg/".{{$goods['goods_img']}} alt="">
-        名称：{{$goods['goods-name']}}
+        名称：{{$goods['goods_name']}}
         价格：{{$goods['goods_price']}}
         <div class="links">
             <a href="https://laravel.com/docs">Docs</a>
