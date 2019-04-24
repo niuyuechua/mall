@@ -198,10 +198,19 @@ class WxController extends Controller
 
     //微信网页授权
     public function authorization(){
-        //$url="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+        //$url="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb6e65a6dbd6cfb06&redirect_uri=http%3A%2F%2F1809niuyuechyuang.comcto.com%2Fwx%2FgetUinfo&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
     }
     //授权回调
     public function getUinfo(){
-
+        echo '<pre>';print_r($_GET);echo '</pre>';
+        $code=$_GET['code'];
+        $url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=".env('WX_APP_ID')."&secret=".env('WX_APP_SEC')."&code=".$code."&grant_type=authorization_code";
+        $res=json_decode(file_get_contents($url),true);
+        echo '<pre>';print_r($res);echo '</pre>';
+        $access_token=$res['access_token'];
+        $openid=$res['openid'];
+        $url2="https://api.weixin.qq.com/sns/userinfo?access_token=".$access_token."&openid=".$openid."&lang=zh_CN";
+        $userInfo=json_decode(file_get_contents($url2),true);
+        echo '<pre>';print_r($userInfo);echo '</pre>';
     }
 }
