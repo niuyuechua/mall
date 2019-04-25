@@ -219,7 +219,7 @@ class WxController extends Controller
             echo '欢迎回来 '.$userInfo['nickname'];
         }else{
             //用户信息入库
-            $res = WxUserModel::insert($userInfo);
+            $res = UserModel::insert($userInfo);
             echo '欢迎关注 '.$userInfo['nickname'];
         }
     }
