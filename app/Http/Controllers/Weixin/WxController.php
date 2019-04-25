@@ -200,7 +200,7 @@ class WxController extends Controller
     //微信网页授权
     public function authorization(){
         //$url="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb6e65a6dbd6cfb06&redirect_uri=http%3A%2F%2F1809niuyuechyuang.comcto.com%2Fwx%2FgetUinfo&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-    }
+}
     //授权回调
     public function getUinfo(){
         echo '<pre>';print_r($_GET);echo '</pre>';
@@ -214,12 +214,22 @@ class WxController extends Controller
         $userInfo=json_decode(file_get_contents($url2),true);
         echo '<pre>';print_r($userInfo);echo '</pre>';
         //用户信息入库
-        $user=UserModel::where(['openid'=>$openid])->first();
+        $user=UserModel::where(['openid'=>$userInfo['openid']])->first();
         if($user){
-            echo '欢迎回来 '.$userInfo['nickname'];
+            echo '欢迎回来 '.$user['nickname'];
         }else{
             //用户信息入库
-            $r=UserModel::insert($userInfo);
+            $user=[
+                'openid'=>$userInfo['openid'],
+                'nickname'=>$userInfo['nickname'],
+                'sex'=>$userInfo['sex'],
+                'language'=>$userInfo['language'],
+                'city'=>$userInfo['city'],
+                'province'=>$userInfo['province'],
+                'country'=>$userInfo['country'],
+                'headimgurl'=>$userInfo['headimgurl']
+            ];
+            $r=UserModel::insert($user);
             if($r){
                 echo '欢迎关注 '.$userInfo['nickname'];
             }else{
