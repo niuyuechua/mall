@@ -214,13 +214,13 @@ class WxController extends Controller
         $userInfo=json_decode(file_get_contents($url2),true);
         echo '<pre>';print_r($userInfo);echo '</pre>';
         //用户信息入库
-//        $userInfo=UserModel::where(['openid'=>$userInfo['openid']])->first();
-//        if($userInfo){
-//            echo '欢迎回来 '.$userInfo['nickname'];
-//        }else{
-//            //用户信息入库
-//            $res = UserModel::insert($userInfo);
-//            echo '欢迎关注 '.$userInfo['nickname'];
-//        }
+        $userInfo=UserModel::where(['openid'=>$userInfo['openid']])->first();
+        if($userInfo){
+            echo '欢迎回来 '.$userInfo['nickname'];
+        }else{
+            //用户信息入库
+            UserModel::insert($userInfo);
+            echo '欢迎关注 '.$userInfo['nickname'];
+        }
     }
 }
