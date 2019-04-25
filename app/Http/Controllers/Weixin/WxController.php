@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
 use App\GoodsModel;
+use App\UserModel;
 use Illuminate\Support\Str;
 
 class WxController extends Controller
@@ -212,5 +213,14 @@ class WxController extends Controller
         $url2="https://api.weixin.qq.com/sns/userinfo?access_token=".$access_token."&openid=".$openid."&lang=zh_CN";
         $userInfo=json_decode(file_get_contents($url2),true);
         echo '<pre>';print_r($userInfo);echo '</pre>';
+        //用户信息入库
+        $userInfo=UserModel::where('openid','=',$userInfo['openid'])->first();
+        if($userInfo){
+            echo '欢迎回来 '.$userInfo['nickname'];
+        }else{
+            //用户信息入库
+            $res = WxUserModel::insert($userInfo);
+            echo '欢迎关注 '.$userInfo['nickname'];
+        }
     }
 }
