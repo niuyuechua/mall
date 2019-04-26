@@ -85,18 +85,26 @@ class GoodsController extends Controller
         $grid->goods_name('名称');
         $grid->goods_price('价格');
         $grid->market_price('市场售价');
-        $grid->is_up('是否下架');
-        $grid->is_new('新品');
-        $grid->is_best('精品');
-        $grid->is_hot('热卖');
+        $grid->is_up('是否下架')->display(function($is_up){
+            if($is_up==0){
+                return "是";
+            }else{
+                return "否";
+            }
+        });
+        //$grid->is_new('新品');
+        //$grid->is_best('精品');
+        //$grid->is_hot('热卖');
         $grid->goods_num('库存');
         $grid->goods_score('赠送积分');
-        $grid->goods_img('商品图片');
-        $grid->goods_imgs('商品轮播图');
-        $grid->goods_desc('商品详情');
-        $grid->cate_id('分类');
-        $grid->brand_id('品牌');
-        $grid->create_time('上架时间');
+        //$grid->goods_img('商品图片');
+        //$grid->goods_imgs('商品轮播图');
+        //$grid->goods_desc('商品详情');
+        //$grid->cate_id('分类');
+        //$grid->brand_id('品牌');
+        $grid->create_time('上架时间')->display(function($create_time){
+            return date('Y-m-d H:i',$create_time);
+        });
 
         return $grid;
     }
