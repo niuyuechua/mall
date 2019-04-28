@@ -41,3 +41,6 @@ Route::get('test/urlencode',function(){
 Route::get('wx/authorization','Weixin\WxController@authorization');
 //授权回调
 Route::get('wx/getUinfo','Weixin\WxController@getUinfo');
+//生成带参数的二维码
+Route::get('wx/getTicket','Weixin\WxController@getTicket');
+Route::get('wx/code','Weixin\WxController@code');

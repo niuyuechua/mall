@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
 use App\GoodsModel;
 use App\UserModel;
+use App\TmpUserModel;
 use Illuminate\Support\Str;
 
 class WxController extends Controller
@@ -33,18 +34,42 @@ class WxController extends Controller
         $event=$obj->Event;    //事件类型
         $msg_type=$obj->MsgType;    //消息类型
         //echo $openid;die;
-        $event=$obj->Event;
         if($event=='subscribe'){
-            $userInfo=WxUserModel::where('openid','=',"$openid")->first();
-            if($userInfo){
-                echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+            $event_key=$obj->EventKey;  //场景
+            //判断扫描的是普通二维码还是带参数的二维码
+            if($event_key==''){
+                //普通二维码
+                $userInfo=WxUserModel::where('openid','=',"$openid")->first();
+                if($userInfo){
+                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
                             <Content><![CDATA['.'欢迎回来'.$userInfo['nickname'].']]></Content>
                        </xml>';
+                }else{
+                    //获取新用户信息
+                    $info = $this->getUserInfo($openid);//对象格式
+                    //用户信息入库
+                    $data=[
+                        'openid'=>$info->openid,
+                        'nickname'=>$info->nickname,
+                        'sex'=>$info->sex,
+                        'headimgurl'=>$info->headimgurl,
+                        'subscribe_time'=>$info->subscribe_time
+                    ];
+                    $res = TmpUserModel::insert($data);
+                    echo '<xml>
+                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>'.time().'</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA['.'欢迎关注'. $info->nickname .']]></Content>
+                          </xml>';
+                }
             }else{
-                //获取新用户信息
+                //带参数的二维码
+                $event_key=substr($event_key,7);
                 $info = $this->getUserInfo($openid);//对象格式
                 //用户信息入库
                 $data=[
@@ -52,16 +77,55 @@ class WxController extends Controller
                     'nickname'=>$info->nickname,
                     'sex'=>$info->sex,
                     'headimgurl'=>$info->headimgurl,
-                    'subscribe_time'=>$info->subscribe_time
+                    'subscribe_time'=>$info->subscribe_time,
+                    'event_key'=>$event_key
                 ];
                 $res = WxUserModel::insert($data);
-                echo '<xml>
-                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-                            <CreateTime>'.time().'</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA['.'欢迎关注'. $info->nickname .']]></Content>
-                          </xml>';
+                $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
+                foreach($goods as $k=>$v){
+                    $img=$v['goods_img'];
+                    $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
+                    $res='<xml>
+                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                          <CreateTime>'.time().'</CreateTime>
+                          <MsgType><![CDATA[news]]></MsgType>
+                          <ArticleCount>1</ArticleCount>
+                          <Articles>
+                            <item>
+                              <Title><![CDATA[欢迎新用户]]></Title>
+                              <Description><![CDATA[分享有好礼]]></Description>
+                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
+                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
+                            </item>
+                          </Articles>
+                        </xml>';
+                    echo $res;
+                }
+            }
+        }
+        if($event=='SCAN'){
+            //带参数的二维码
+            $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
+            foreach($goods as $k=>$v){
+                $img=$v['goods_img'];
+                $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
+                $res='<xml>
+                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                          <CreateTime>'.time().'</CreateTime>
+                          <MsgType><![CDATA[news]]></MsgType>
+                          <ArticleCount>1</ArticleCount>
+                          <Articles>
+                            <item>
+                              <Title><![CDATA[欢迎回来呀]]></Title>
+                              <Description><![CDATA[分享有好礼哟]]></Description>
+                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
+                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
+                            </item>
+                          </Articles>
+                        </xml>';
+                echo $res;
             }
         }
         if($msg_type=='text'){
@@ -237,5 +301,30 @@ class WxController extends Controller
             }
 
         }
+    }
+
+    //获取生成带参数二维码的ticket
+    public function getTicket(){
+        $url="https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=".$this->getAccessToken()."";
+        $arr=[
+            'expire_seconds'=> 604800,
+            'action_name'=>'QR_SCENE',
+            'action_info'=>[
+                'scene'=>[
+                    'scene_id'=>666
+                ]
+            ]
+        ];
+        $str=json_encode($arr);
+        //dump($str);
+        $client = new Client();
+        $response = $client->request('POST',$url,[
+            'body' => $str
+        ]);
+        $json =  $response->getBody();
+        //dump($json);
+        $arr2=json_decode($json,true);
+        dump($arr2);
+        $ticket=$arr2['ticket'];
     }
 }

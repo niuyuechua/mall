@@ -22,5 +22,6 @@ class VerifyCsrfToken extends Middleware
         //'http://39.107.78.144/cart/returnPay',
         'wx/valid',
         'pay/notice',
+        '/admin/material/addImg'
     ];
 }
