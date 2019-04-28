@@ -58,7 +58,7 @@ class WxController extends Controller
                         'headimgurl'=>$info->headimgurl,
                         'subscribe_time'=>$info->subscribe_time
                     ];
-                    $res = TmpUserModel::insert($data);
+                    $res = WxUserModel::insert($data);
                     echo '<xml>
                             <ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
@@ -80,7 +80,7 @@ class WxController extends Controller
                     'subscribe_time'=>$info->subscribe_time,
                     'event_key'=>$event_key
                 ];
-                $res = WxUserModel::insert($data);
+                $res = TmpUserModel::insert($data);
                 $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
                 foreach($goods as $k=>$v){
                     $img=$v['goods_img'];
