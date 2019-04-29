@@ -233,6 +233,7 @@ class WxController extends Controller
         return $js_config;
     }
     public function test(){
+        //var_dump($_SERVER['SERVER_NAME']);die;
         $token=$this->getAccessToken();
         echo $token;
     }
@@ -264,27 +265,26 @@ class WxController extends Controller
 
     //菜单
     public function createMent(){
-        //url
-        $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->getAccessToken();
-        //dump($url);die;
-
+        $redirect_url=urlencode("http://1809niuyuechyuang.comcto.com/wx/getUinfo");
+        $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo &state=STATE#wechat_redirect";
         //接口数据
         $post_arr=[
             'button' => [
                 [
-                    'type'=>'click',
-                    'name'=>'今日歌曲',
-                    'key'=>'V1001_TODAY_MUSIC',
+                    'type'=>'view',
+                    'name'=>'最新福利',
+                    'url'=>$url2,
                 ],
                 [
-                    'type'=>'click',
-                    'name'=>'1809A',
-                    'key'=>'V1001_TODAY_MUSIA',
+                    'type'=>'view',
+                    'name'=>'签到',
+                    'url'=>$url2,
                 ],
             ],
         ];
         $json_str=json_encode($post_arr, JSON_UNESCAPED_UNICODE);   //加参数二可处理含中文的数组
         //dd($json_str);die;
+        $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->getAccessToken();
         //请求接口
         $client= new Client();
         $responce=$client->request('POST',$url,[
@@ -293,16 +293,17 @@ class WxController extends Controller
         //dd($responce);die;
         //处理响应
         $res_str=$responce->getBody();
-        echo $res_str;
-        //判断错误信息
-//        if($res_str>['errcode']>0){
-//
-//        }else{
-//            echo '错误';
-//        }
+        //echo $res_str;
+        $arr=json_decode($res_str,true);
+        //dd($arr);die;
+        if($arr['errcode']==0){
+            echo "创建菜单成功";
+        }else{
+            echo '创建菜单失败';
+        }
     }
 
-    //微信网页授权
+    //微信网页授权（手机点击）
     public function authorization(){
         //$url="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb6e65a6dbd6cfb06&redirect_uri=http%3A%2F%2F1809niuyuechyuang.comcto.com%2Fwx%2FgetUinfo&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 }
@@ -336,9 +337,10 @@ class WxController extends Controller
             ];
             $r=UserModel::insert($user);
             if($r){
-                echo '欢迎关注 '.$userInfo['nickname'];
+                echo '欢迎'.$userInfo['nickname'].',正在跳转至福利页面';
+                header("refresh:3;url=http://1809niuyuechyuang/wx/goodsDetail?goods_id=60");
             }else{
-                echo '授权失败';
+                echo '授权失败,请稍后尝试';
             }
 
         }
