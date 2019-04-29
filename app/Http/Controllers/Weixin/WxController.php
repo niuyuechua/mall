@@ -156,7 +156,7 @@ class WxController extends Controller
 
             if(strpos($obj->Content,'小米')){
                 $name=$obj->Content;
-                $data=PhoneModel::where(['name'=>$name])->first()->tiArray();
+                $data=PhoneModel::where(['name'=>$name])->first()->toArray();
                 if(!$data){
                     $data=PhoneModel::orderby('up_time','desc')->first()->toArray();
                 }
