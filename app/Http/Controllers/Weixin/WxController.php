@@ -266,7 +266,7 @@ class WxController extends Controller
     //菜单
     public function createMent(){
         $redirect_url=urlencode("http://1809niuyuechyuang.comcto.com/wx/getUinfo");
-        $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo &state=STATE#wechat_redirect";
+        $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
         //接口数据
         $post_arr=[
             'button' => [
