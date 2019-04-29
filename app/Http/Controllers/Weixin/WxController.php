@@ -11,6 +11,7 @@ use GuzzleHttp\Psr7\Uri;
 use App\GoodsModel;
 use App\UserModel;
 use App\TmpUserModel;
+use App\PhoneModel;
 use Illuminate\Support\Str;
 
 class WxController extends Controller
@@ -69,7 +70,7 @@ class WxController extends Controller
                 }
             }else{
                 //带参数的二维码
-                $event_key=substr($event_key,7);
+                $event_key=substr($event_key,8);
                 $info = $this->getUserInfo($openid);//对象格式
                 //用户信息入库
                 $data=[
@@ -153,6 +154,31 @@ class WxController extends Controller
                     echo $res;
                 }
 
+            if(strpos($obj->Content,'小米')){
+                $name=$obj->Content;
+                $data=PhoneModel::where(['name'=>$name])->first()->tiArray();
+                if(!$data){
+                    $data=PhoneModel::orderby('up_time','desc')->first()->toArray();
+                }
+                $img=$data['img'];
+                $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
+                $res='<xml>
+                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                          <CreateTime>'.time().'</CreateTime>
+                          <MsgType><![CDATA[news]]></MsgType>
+                          <ArticleCount>1</ArticleCount>
+                          <Articles>
+                            <item>
+                              <Title><![CDATA[小米专卖]]></Title>
+                              <Description><![CDATA[你说小米，我说6 oy]]></Description>
+                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
+                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/phoneDetail?id='.$data['id'].']]></Url>
+                            </item>
+                          </Articles>
+                        </xml>';
+                echo $res;
+            }
             }
         }
     }
@@ -160,13 +186,28 @@ class WxController extends Controller
     public function goodsDetail(){
         $goods_id=$_GET['goods_id'];
         //echo $goods_id;die;
+        $ticket=$this->goodsTicket($goods_id);
+        //$code_url="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=".$ticket."";
+        $code_url="http://1809a_weixin.com/wx/goodsDetail?goods_id=".$goods_id;
         $goods=GoodsModel::where(['goods_id'=>$goods_id])->first()->toArray();
         $js_config=$this->getConfig();
         $data=[
             'goods'=>$goods,
-            'js_config'=>$js_config
+            'js_config'=>$js_config,
+            'code_url'=>$code_url
         ];
         return view('goods.detail',$data);
+    }
+    //手机详情
+    public function phoneDetail(){
+        $id=$_GET['id'];
+        $phone=PhoneModel::where(['id'=>$id])->first()->toArray();
+        $js_config=$this->getConfig();
+        $data=[
+            'phone'=>$phone,
+            'js_config'=>$js_config,
+        ];
+        return view('phone.detail',$data);
     }
     //获取config接口参数值
     public function getConfig(){
@@ -203,7 +244,7 @@ class WxController extends Controller
             echo "有缓存";
         }else{
             echo "没有缓存";
-            $url="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb6e65a6dbd6cfb06&secret=9fdf084e4ff69341e638e2e7941e8ce8 ";
+            $url="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb6e65a6dbd6cfb06&secret=9fdf084e4ff69341e638e2e7941e8ce8";
             $response=file_get_contents($url);      //json字符串
             $arr=json_decode($response,true);       //将json字符串转化成数组
             //做缓存
@@ -326,5 +367,35 @@ class WxController extends Controller
         $arr2=json_decode($json,true);
         dump($arr2);
         $ticket=$arr2['ticket'];
+        $code_url="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=".$ticket;
+        $data=[
+            'code_url'=>$code_url
+        ];
+        return view('code.code',$data);
+    }
+    //根据商品id获取生成带参数二维码的ticket
+    public function goodsTicket($goods_id){
+        $url="https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=".$this->getAccessToken()."";
+        $arr=[
+            'expire_seconds'=> 604800,
+            'action_name'=>'QR_SCENE',
+            'action_info'=>[
+                'scene'=>[
+                    'scene_id'=>$goods_id
+                ]
+            ]
+        ];
+        $str=json_encode($arr);
+        //dump($str);
+        $client = new Client();
+        $response = $client->request('POST',$url,[
+            'body' => $str
+        ]);
+        $json =  $response->getBody();
+        //dump($json);
+        $arr2=json_decode($json,true);
+        //dump($arr2);
+        $ticket=$arr2['ticket'];
+        return $ticket;
     }
 }

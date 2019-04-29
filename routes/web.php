@@ -26,6 +26,7 @@ Route::get('wx/test','Weixin\WxController@test');
 Route::post('wx/valid','Weixin\WxController@wxEvent');
 //图文消息详情
 Route::get('wx/goodsDetail','Weixin\WxController@goodsDetail');
+Route::get('wx/phoneDetail','Weixin\WxController@phoneDetail');
 //自定义菜单
 Route::get('wx/createMent','Weixin\WxController@createMent');
 //支付
