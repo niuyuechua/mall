@@ -265,7 +265,7 @@ class WxController extends Controller
 
     //菜单
     public function createMent(){
-        $redirect_url=urlencode("http://1809niuyuechyuang.comcto.com/wx/getUinfo");
+        $redirect_url=urlEncode("http://1809niuyuechyuang.comcto.com/wx/getUinfo");
         $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
         //接口数据
         $post_arr=[
@@ -309,7 +309,7 @@ class WxController extends Controller
 }
     //授权回调
     public function getUinfo(){
-        //echo '<pre>';print_r($_GET);echo '</pre>';
+        echo '<pre>';print_r($_GET);echo '</pre>';die;
         $code=$_GET['code'];
         $url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=".env('WX_APP_ID')."&secret=".env('WX_APP_SEC')."&code=".$code."&grant_type=authorization_code";
         $res=json_decode(file_get_contents($url),true);
@@ -322,7 +322,8 @@ class WxController extends Controller
         //用户信息入库
         $user=UserModel::where(['openid'=>$userInfo['openid']])->first();
         if($user){
-            echo '欢迎回来 '.$user['nickname'];
+            echo '欢迎回来 '.$user['nickname'].',正在跳转至福利页面';
+            header("refresh:3;url=http://1809niuyuechyuang/wx/goodsDetail?goods_id=60");
         }else{
             //用户信息入库
             $user=[
