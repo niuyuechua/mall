@@ -80,11 +80,12 @@ class ListController extends Controller
     protected function grid()
     {
         $grid = new Grid(new MaterialModel);
+        $server_name=$_SERVER['SERVER_NAME'];
 
         $grid->id('Id');
         $grid->type('Type');
         $grid->media_id('Media id');
-        $grid->img_url('Img url')->image('http://1809a_weixin.com');
+        $grid->img_url('Img url')->image('http://'.$server_name);    //lavarel后台根据此域名对应的文件夹去找图片
         $grid->created_at('Created at');
 
         return $grid;
