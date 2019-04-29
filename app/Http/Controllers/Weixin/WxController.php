@@ -130,30 +130,30 @@ class WxController extends Controller
             }
         }
         if($msg_type=='text'){
-            if($obj->Content=='最新商品'){
-                $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
+            if($obj->Content=='最新商品') {
+                $goods = GoodsModel::orderby('create_time', 'desc')->limit(5)->get()->toArray();
                 //$url="https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$this->getAccessToken()."&type=image";
-                foreach($goods as $k=>$v){
-                    $img=$v['goods_img'];
-                    $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
-                    $res='<xml>
-                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
-                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-                          <CreateTime>'.time().'</CreateTime>
+                foreach ($goods as $k => $v) {
+                    $img = $v['goods_img'];
+                    $picurl = "http://1809niuyuechyuang.comcto.com/goodsimg/" . $img;
+                    $res = '<xml>
+                          <ToUserName><![CDATA[' . $openid . ']]></ToUserName>
+                          <FromUserName><![CDATA[' . $kf_id . ']]></FromUserName>
+                          <CreateTime>' . time() . '</CreateTime>
                           <MsgType><![CDATA[news]]></MsgType>
                           <ArticleCount>1</ArticleCount>
                           <Articles>
                             <item>
                               <Title><![CDATA[最新商品]]></Title>
                               <Description><![CDATA[啦啦啦]]></Description>
-                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
-                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
+                              <PicUrl><![CDATA[' . $picurl . ']]></PicUrl>
+                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id=' . $v['goods_id'] . ']]></Url>
                             </item>
                           </Articles>
                         </xml>';
                     echo $res;
                 }
-
+            }
             if(strpos($obj->Content,'小米')){
                 $name=$obj->Content;
                 $data=PhoneModel::where(['name'=>$name])->first()->toArray();
@@ -178,7 +178,6 @@ class WxController extends Controller
                           </Articles>
                         </xml>';
                 echo $res;
-            }
             }
         }
     }
