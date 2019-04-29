@@ -157,6 +157,7 @@ class WxController extends Controller
             if(strpos($obj->Content,'小米')){
                 $name=$obj->Content;
                 $data=PhoneModel::where(['name'=>$name])->first()->toArray();
+                //dump($data);
                 if(!$data){
                     $data=PhoneModel::orderby('up_time','desc')->first()->toArray();
                 }
@@ -170,7 +171,7 @@ class WxController extends Controller
                           <ArticleCount>1</ArticleCount>
                           <Articles>
                             <item>
-                              <Title><![CDATA[小米专卖]]></Title>
+                              <Title><![CDATA['.$data['name'].']]></Title>
                               <Description><![CDATA[你说小米，我说6 oy]]></Description>
                               <PicUrl><![CDATA['.$picurl.']]></PicUrl>
                               <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/phoneDetail?id='.$data['id'].']]></Url>
@@ -282,7 +283,7 @@ class WxController extends Controller
                 ],
             ],
         ];
-        $json_str=json_encode($post_arr, JSON_UNESCAPED_UNICODE);
+        $json_str=json_encode($post_arr, JSON_UNESCAPED_UNICODE);   //加参数二可处理含中文的数组
         //dd($json_str);die;
         //请求接口
         $client= new Client();
@@ -367,6 +368,7 @@ class WxController extends Controller
         dump($arr2);
         $ticket=$arr2['ticket'];
         $code_url="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=".$ticket;
+        //$code_url="http://1809a_weixin.com/wx/valid";
         $data=[
             'code_url'=>$code_url
         ];

@@ -15,6 +15,7 @@
         <tr>
             <td><input type="submit"></td>
         </tr>
+        {{csrf_field()}}
     </form>
 </body>
 </html>

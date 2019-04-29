@@ -12,6 +12,7 @@ use Encore\Admin\Show;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use GuzzleHttp\Client;
+use Illuminate\Support\Str;
 
 class MaterialController extends Controller
 {
@@ -93,10 +94,17 @@ class MaterialController extends Controller
         return view('admin.addImg');
     }
 
-    public function addImg(){
-        //$name=$_GET['name'];
-        $filename=request()->input();
-        //dump($filename);
+    public function addImg(Request $request){
+        $fileInfo=$request->file('file');
+        //dump($fileInfo);
+        $filename=$fileInfo->getClientOriginalName();   //原始文件名
+        $ext=$fileInfo->getClientOriginalExtension();   //原始文件扩展名
+        //生成新文件名 （规则：时间+随机字符串+原始文件扩展名）
+        $new_filename=date('ymd').'_'.Str::random(10).'.'.$ext;
+        $save_path='upload';
+        //保存文件
+        $res=$fileInfo->storeAs($save_path,$new_filename);      //默认保存在 storage/app/$save_path
+        //var_dump($res);       返回文件保存路径
         $access_token=$this->getAccessToken();
         $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type=image';
         $client = new Client();
@@ -104,7 +112,7 @@ class MaterialController extends Controller
             'multipart' => [
                 [
                     'name' => 'filename',
-                    'contents' => fopen('goodsimg/20190220/0b67811fb47e259ae5920655260ebd9b.PNG', 'r'),
+                    'contents' => fopen($res, 'r'),
                 ]
             ]
         ]);
@@ -112,6 +120,7 @@ class MaterialController extends Controller
         $json =  $response->getBody();
         $arr=json_decode($json,true);
         //dump($arr);
+        $arr['img_url']=$res;
         $res=MaterialModel::insert($arr);
         if($res){
             echo '素材上传成功';

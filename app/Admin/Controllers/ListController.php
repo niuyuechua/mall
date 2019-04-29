@@ -84,6 +84,7 @@ class ListController extends Controller
         $grid->id('Id');
         $grid->type('Type');
         $grid->media_id('Media id');
+        $grid->img_url('Img url')->image('http://1809a_weixin.com');
         $grid->created_at('Created at');
 
         return $grid;
@@ -102,6 +103,7 @@ class ListController extends Controller
         $show->id('Id');
         $show->type('Type');
         $show->media_id('Media id');
+        $show->img_url('Img url');
         $show->created_at('Created at');
 
         return $show;
@@ -118,6 +120,8 @@ class ListController extends Controller
 
         $form->text('type', 'Type');
         $form->text('media_id', 'Media id');
+        //$form->text('img_url', 'Img url');
+        $form->image('img_url', 'Img url');
 
         return $form;
     }
