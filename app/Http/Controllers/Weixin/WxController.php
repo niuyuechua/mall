@@ -242,9 +242,9 @@ class WxController extends Controller
         $key="set_access_token";
         $data=Redis::get($key);
         if($data){
-            echo "有缓存";
+            //echo "有缓存";
         }else{
-            echo "没有缓存";
+            //echo "没有缓存";
             $url="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb6e65a6dbd6cfb06&secret=9fdf084e4ff69341e638e2e7941e8ce8";
             $response=file_get_contents($url);      //json字符串
             $arr=json_decode($response,true);       //将json字符串转化成数组
