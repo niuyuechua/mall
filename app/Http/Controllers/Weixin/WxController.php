@@ -147,7 +147,7 @@ class WxController extends Controller
                               <Title><![CDATA[最新商品]]></Title>
                               <Description><![CDATA[啦啦啦]]></Description>
                               <PicUrl><![CDATA[' . $picurl . ']]></PicUrl>
-                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id=' . $v['goods_id'] . ']]></Url>
+                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
                             </item>
                           </Articles>
                         </xml>';
