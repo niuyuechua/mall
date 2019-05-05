@@ -23,9 +23,10 @@ Route::get('/info',function(){
 Route::get('wx/valid','Weixin\WxController@valid');
 Route::get('wx/getAccessToken','Weixin\WxController@getAccessToken');
 Route::get('wx/test','Weixin\WxController@test');
-//Route::post('wx/valid','Weixin\WxController@wxEvent');
-Route::post('wx/valid','Weixin\ExamController@wxEvent');
-Route::get('wx/getAccessToken','Weixin\ExamController@getAccessToken');
+Route::post('wx/valid','Weixin\WxController@wxEvent');
+//月考机试
+//Route::post('wx/valid','Weixin\ExamController@wxEvent');
+//Route::get('wx/getAccessToken','Weixin\ExamController@getAccessToken');
 //图文消息详情
 Route::get('wx/goodsDetail','Weixin\WxController@goodsDetail');
 Route::get('wx/phoneDetail','Weixin\WxController@phoneDetail');
