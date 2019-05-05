@@ -309,7 +309,7 @@ class WxController extends Controller
 }
     //授权回调
     public function getUinfo(){
-        echo '<pre>';print_r($_GET);echo '</pre>';die;
+        //echo '<pre>';print_r($_GET);echo '</pre>';die;
         $code=$_GET['code'];
         $url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=".env('WX_APP_ID')."&secret=".env('WX_APP_SEC')."&code=".$code."&grant_type=authorization_code";
         $res=json_decode(file_get_contents($url),true);
