@@ -322,6 +322,11 @@ class WxController extends Controller
         $post_arr=[
             'button' => [
                 [
+                    'type'=>'click',
+                    'name'=>'功能说明',
+                    'key'=>'function declaration',
+                ],
+                [
                     'type'=>'view',
                     'name'=>'最新福利',
                     'url'=>$url2,
@@ -343,15 +348,15 @@ class WxController extends Controller
         ]);
         //dd($responce);die;
         //处理响应
-        $res_str=$responce->getBody();
-        //echo $res_str;
-        $arr=json_decode($res_str,true);
-        //dd($arr);die;
-        if($arr['errcode']==0){
-            echo "创建菜单成功";
-        }else{
-            echo '创建菜单失败';
-        }
+        //$res_str=$responce->getBody();
+        //dd($res_str);
+        //$arr=json_decode($res_str,true);
+        //dd($arr);
+//        if($arr['errcode']==0){
+//            echo "创建菜单成功";
+//        }else{
+//            echo '创建菜单失败';
+//        }
     }
 
     //微信网页授权（手机点击）
