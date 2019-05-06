@@ -130,6 +130,7 @@ class WxController extends Controller
             }
         }
         if($msg_type=='text'){
+            //回复图文
             if($obj->Content=='最新商品') {
                 $goods = GoodsModel::orderby('create_time', 'desc')->limit(5)->get()->toArray();
                 //$url="https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$this->getAccessToken()."&type=image";
@@ -154,6 +155,7 @@ class WxController extends Controller
                     echo $res;
                 }
             }
+            //回复图文（查询数据库，存在返回详情，不存在返回最新商品详情）
             if(strpos($obj->Content,'小米')){
                 $name=$obj->Content;
                 $data=PhoneModel::where(['name'=>$name])->first()->toArray();
@@ -180,7 +182,7 @@ class WxController extends Controller
                         </xml>';
                 echo $res;
             }
-            //天气
+            //查询城市天气
             if(strpos($obj->Content,'+天气')){
                 $city=explode('+',$obj->Content)[0];
                 //$url="https://free-api.heweather.net/s6/weather/now?location=".$city."&key=HE1905052041271004";
@@ -216,6 +218,18 @@ class WxController extends Controller
                             <Content><![CDATA['.$str.']]></Content>
                           </xml>';
                 }
+            }
+            //回复图片
+            if($obj->Content=='图片'){
+                echo '<xml>
+                      <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                      <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                      <CreateTime>'.time().'</CreateTime>
+                      <MsgType><![CDATA[image]]></MsgType>
+                      <Image>
+                        <MediaId><![CDATA[0OX-rmhHOdhBzCZmOSlTJ-KUIUVRl6L_hWx5O9woHi3raTu8Z5MwcNrpOcg1Pe4Z]]></MediaId>
+                      </Image>
+                    </xml>';
             }
         }
     }
