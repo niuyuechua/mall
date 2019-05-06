@@ -204,16 +204,16 @@ class WxController extends Controller
                         $cond_txt=$v['weather'];//天气状况
                         $wind_dir=$v['wind'];//风向
                         $wind_sc=$v['winp'];//风力
-                        $str="日期：".$days. $week."\n"."城市名称：".$city."\n"."温度：".$tmp."\n"."天气状况：".$cond_txt."\n".
-                            "风向：".$wind_dir."\n". "风力：". $wind_sc."\n";
-                        echo '<xml>
+                        $str.="日期：".$days. $week."\n"."城市名称：".$city."\n"."温度：".$tmp."\n"."天气状况：".$cond_txt."\n".
+                            "风向：".$wind_dir."\n". "风力：". $wind_sc."\n"."\n";
+                    }
+                    echo '<xml>
                             <ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                             <CreateTime>'.time().'</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
                             <Content><![CDATA['.$str.']]></Content>
                           </xml>';
-                    }
                 }
             }
         }
