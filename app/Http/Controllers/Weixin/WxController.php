@@ -188,13 +188,13 @@ class WxController extends Controller
                 $res=file_get_contents($url);
                 $arr=json_decode($res,true);
                 if($arr['success']==0){
-                    echo "<xml>
+                    echo '<xml>
                             <ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                             <CreateTime>'.time().'</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
                             <Content><![CDATA[城市错误]]></Content>
-                          </xml>";
+                          </xml>';
                 }elseif($arr['success']==1){
                     foreach($arr['result'] as $k=>$v){
                         $days=$v['days'];
@@ -206,13 +206,13 @@ class WxController extends Controller
                         $wind_sc=$v['winp'];//风力
                         $str="日期：".$days. $week."\n"."城市名称：".$city."\n"."温度：".$tmp."\n"."天气状况：".$cond_txt."\n".
                             "风向：".$wind_dir."\n". "风力：". $wind_sc."\n";
-                        echo "<xml>
+                        echo '<xml>
                             <ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                             <CreateTime>'.time().'</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[.$str.]]></Content>
-                          </xml>";
+                            <Content><![CDATA['.$str.']]></Content>
+                          </xml>';
                     }
                 }
             }
