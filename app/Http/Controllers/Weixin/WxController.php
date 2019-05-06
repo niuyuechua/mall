@@ -180,6 +180,42 @@ class WxController extends Controller
                         </xml>';
                 echo $res;
             }
+            //天气
+            if(strpos($obj->Content,'+天气')){
+                $city=explode('+',$obj->Content)[0];
+                //$url="https://free-api.heweather.net/s6/weather/now?location=".$city."&key=HE1905052041271004";
+                $url="http://api.k780.com?app=weather.future&weaid=".$city."&appkey=42246&sign=94cfdcf87e9594bdbc981a6e349fd50f&format=json";
+                $res=file_get_contents($url);
+                $arr=json_decode($res,true);
+                if($arr['success']==0){
+                    echo "<xml>
+                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>'.time().'</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[城市错误]]></Content>
+                          </xml>";
+                }elseif($arr['success']==1){
+                    foreach($arr['result'] as $k=>$v){
+                        $days=$v['days'];
+                        $week=$v['week'];
+                        $city=$v['citynm'];// 	该地区／城市的上级城市
+                        $tmp=$v['temperature'];//温度
+                        $cond_txt=$v['weather'];//天气状况
+                        $wind_dir=$v['wind'];//风向
+                        $wind_sc=$v['winp'];//风力
+                        $str="日期：".$days. $week."\n"."城市名称：".$city."\n"."温度：".$tmp."\n"."天气状况：".$cond_txt."\n".
+                            "风向：".$wind_dir."\n". "风力：". $wind_sc."\n";
+                        echo "<xml>
+                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>'.time().'</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[.$str.]]></Content>
+                          </xml>";
+                    }
+                }
+            }
         }
     }
     //商品详情
