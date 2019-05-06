@@ -196,6 +196,7 @@ class WxController extends Controller
                             <Content><![CDATA[城市错误]]></Content>
                           </xml>';
                 }elseif($arr['success']==1){
+                    $str='';
                     foreach($arr['result'] as $k=>$v){
                         $days=$v['days'];
                         $week=$v['week'];
