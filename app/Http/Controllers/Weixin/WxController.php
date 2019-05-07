@@ -219,8 +219,25 @@ class WxController extends Controller
                           </xml>';
                 }
             }
-            //回复图片
-            if($obj->Content=='图片'){
+            //回复文本
+            $stu_name=[
+                '牛月闯',
+                '王威龙',
+                '张三',
+                '李四',
+                '王五',
+                '赵六',
+            ];
+            if($obj->Content==1){
+                $str=implode(',',$stu_name);
+                $this->sendTextMsg($openid,$str);
+            }elseif($obj->Content==2){
+                $num=count($stu_name);
+                $rand_num=rand(0,$num-1);
+                $str=$stu_name[$rand_num];
+                $this->sendTextMsg($openid,$str);
+            }elseif($obj->Content=='图片'){
+                //回复图片
                 echo '<xml>
                       <ToUserName><![CDATA['.$openid.']]></ToUserName>
                       <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
@@ -230,21 +247,31 @@ class WxController extends Controller
                         <MediaId><![CDATA[0OX-rmhHOdhBzCZmOSlTJ-KUIUVRl6L_hWx5O9woHi3raTu8Z5MwcNrpOcg1Pe4Z]]></MediaId>
                       </Image>
                     </xml>';
+            }else{
+                $str="你好，欢迎关注！"."\n\n"."发送1 展示全部同学姓名"."\n\n"."发送2 回复最好看同学姓名".
+                    "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
+                    "\n\n"."发送城市+天气 查询该城市未来一周天气";
+                $this->sendTextMsg($openid,$str);
             }
+
         }
         //点击菜单拉取消息
         if($event=='CLICK'){
-            $str="你好，欢迎关注！"."\n"."发送1 展示全部同学姓名"."\n"."发送2 回复最好看同学姓名".
-                "\n"."发送图片 可以斗图哟"."\n"."发送最新商品 有你想要的哦"."\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
-                "\n"."发送城市+天气 查询该城市未来一周天气";
-            echo '<xml>
+            $str="你好，欢迎关注！"."\n\n"."发送1 展示全部同学姓名"."\n\n"."发送2 回复最好看同学姓名".
+                "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
+                "\n\n"."发送城市+天气 查询该城市未来一周天气";
+            $this->sendTextMsg($openid,$str);
+        }
+    }
+    //回复文本消息
+    public function sendTextMsg($openid,$str){
+        echo '<xml>
                   <ToUserName><![CDATA['.$openid.']]></ToUserName>
-                  <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                  <FromUserName><![CDATA[oSBfr5rWb5tS3_TEj3y2vwJNWexo]]></FromUserName>
                   <CreateTime>'.time().'</CreateTime>
                   <MsgType><![CDATA[text]]></MsgType>
                   <Content><![CDATA['.$str.']]></Content>
                 </xml>';
-        }
     }
     //商品详情
     public function goodsDetail(){
