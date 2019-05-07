@@ -57,7 +57,7 @@ class WxController extends Controller
                 //普通二维码
                 $userInfo=WxUserModel::where('openid','=',"$openid")->first();
                 if($userInfo){
-                    WxUserModel::where(['openid'=>$openid])->update('status',1);
+                    WxUserModel::where(['openid'=>$openid])->update(['status'=>1]);
                     echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
@@ -146,7 +146,7 @@ class WxController extends Controller
             }
         }
         if($event=='unsubscribe'){
-            WxUserModel::where(['openid'=>$openid])->update('status',0);
+            WxUserModel::where(['openid'=>$openid])->update(['status'=>0]);
         }
         if($msg_type=='text'){
             //回复图文
