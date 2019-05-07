@@ -20,6 +20,21 @@ class WxController extends Controller
     public function valid(){
         echo $_GET['echostr'];
     }
+    //测试专用方法
+    public function test(){
+        //var_dump($_SERVER['SERVER_NAME']);die;
+
+        //文件缓存
+        $filename="assess_token.txt";
+        if(file_exists($filename)&&time()-filemtime($filename)<=7200){
+            echo '存在';
+            $token=file_get_contents($filename);
+        }else{
+            echo '不存在';
+            $token=$this->getAccessToken();
+            file_put_contents($filename,$token);
+        }
+    }
     //微信服务器推送通知
     public function wxEvent(){
         //接收微信服务器推送通知
@@ -70,7 +85,7 @@ class WxController extends Controller
                 }
             }else{
                 //带参数的二维码
-                $event_key=substr($event_key,8);
+                $event_key=substr($event_key,8);    //参数
                 $info = $this->getUserInfo($openid);//对象格式
                 //用户信息入库
                 $data=[
@@ -128,6 +143,9 @@ class WxController extends Controller
                         </xml>';
                 echo $res;
             }
+        }
+        if($event=='unsubscribe'){
+            WxUserModel::where(['openid'=>$openid])->update('status',1);
         }
         if($msg_type=='text'){
             //回复图文
@@ -322,11 +340,6 @@ class WxController extends Controller
             'signature'=>$signature,    //签名
         ];
         return $js_config;
-    }
-    public function test(){
-        //var_dump($_SERVER['SERVER_NAME']);die;
-        $token=$this->getAccessToken();
-        echo $token;
     }
     //获取access_token
     public function getAccessToken(){
