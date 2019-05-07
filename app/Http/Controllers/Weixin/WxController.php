@@ -267,7 +267,7 @@ class WxController extends Controller
     public function sendTextMsg($openid,$str){
         echo '<xml>
                   <ToUserName><![CDATA['.$openid.']]></ToUserName>
-                  <FromUserName><![CDATA[oSBfr5rWb5tS3_TEj3y2vwJNWexo]]></FromUserName>
+                  <FromUserName><![CDATA[gh_3174a6d2a0ac]]></FromUserName>
                   <CreateTime>'.time().'</CreateTime>
                   <MsgType><![CDATA[text]]></MsgType>
                   <Content><![CDATA['.$str.']]></Content>
