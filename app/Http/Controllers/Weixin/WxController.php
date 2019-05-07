@@ -267,10 +267,12 @@ class WxController extends Controller
                       </Image>
                     </xml>';
             }else{
-                $str="你好，欢迎关注！"."\n\n"."发送1 展示全部同学姓名"."\n\n"."发送2 回复最好看同学姓名".
-                    "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
-                    "\n\n"."发送城市+天气 查询该城市未来一周天气";
-                $this->sendTextMsg($openid,$str);
+                //机器人
+                $info=$obj->Content;
+                $url="http://www.tuling123.com/openapi/api?key=1029047843994443a4f7aae786cb3cbe&info=".$info;
+                $res=file_get_contents($url);
+                $arr=json_decode($res,true);
+                $this->sendTextMsg($openid,$arr['text']);
             }
 
         }
