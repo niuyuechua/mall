@@ -229,7 +229,7 @@ class WxController extends Controller
                 '赵六',
             ];
             if($obj->Content==1){
-                $str=implode(',',$stu_name);
+                $str=implode("\n",$stu_name);
                 $this->sendTextMsg($openid,$str);
             }elseif($obj->Content==2){
                 $num=count($stu_name);
