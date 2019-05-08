@@ -93,7 +93,7 @@ class MaterialController extends Controller
 //        return $grid;
         return view('admin.addImg');
     }
-
+    //guzzle上传临时素材
     public function addImg(Request $request){
         $fileInfo=$request->file('file');
         //dump($fileInfo);
@@ -104,9 +104,19 @@ class MaterialController extends Controller
         $save_path='upload';
         //保存文件
         $res=$fileInfo->storeAs($save_path,$new_filename);      //默认保存在 storage/app/$save_path
-        //var_dump($res);       返回文件保存路径
+        //var_dump($res);die;       //返回文件保存路径
         $access_token=$this->getAccessToken();
         $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type=image';
+
+//      curl上传临时素材
+//        $res="/wwwroot/mall/public/".$res;
+//        $imgPath=new \CURLFile($res);
+//        $post_data=[
+//            'media'=>$imgPath
+//        ];
+//        $data=$this->curlPost($url,$imgPath);
+//        dump($data);die;
+
         $client = new Client();
         $response = $client->request('post',$url,[
             'multipart' => [
@@ -116,19 +126,38 @@ class MaterialController extends Controller
                 ]
             ]
         ]);
-
         $json =  $response->getBody();
         $arr=json_decode($json,true);
-        //dump($arr);
+        dump($arr);die;
         $arr['img_url']=$res;
-        $res=MaterialModel::insert($arr);
-        if($res){
+        $res2=MaterialModel::insert($arr);
+        if($res2){
             echo '素材上传成功';
         }else{
             echo '素材上传失败';
         }
     }
-    
+    //curl上传临时素材
+    public function curlPost($url,$post_data)
+    {
+        //初始化
+        $curl = curl_init();
+        //设置抓取的url
+        curl_setopt($curl, CURLOPT_URL,$url);
+        //设置获取的信息以文件流的形式返回，而不是直接输出。
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        //设置post方式提交
+        curl_setopt($curl, CURLOPT_POST, 1);
+        //设置post数据
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);//这个是重点。
+        //执行命令
+        $data = curl_exec($curl);
+        //关闭URL请求
+        curl_close($curl);
+        //显示获得的数据
+        return $data;
+    }
     //获取access_token
     public function getAccessToken(){
         $key="set_access_token";

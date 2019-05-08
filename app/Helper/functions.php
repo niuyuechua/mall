@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Redis;
+    //获取access_token
     function getAccessToken(){
         $key='wx_access_token';
         $access_token=Redis::get($key);
@@ -17,7 +18,14 @@ use Illuminate\Support\Facades\Redis;
             }
         }
     }
-
+    //获取新用户信息
+    function getUserInfo($openid){
+        $url="https://api.weixin.qq.com/cgi-bin/user/info?access_token=".getAccessToken()."&openid=".$openid."&lang=zh_CN";
+        $data=file_get_contents($url);
+        $u=json_decode($data);
+        return $u;
+    }
+    //获取生成带参数二维码的ticket
     function getTicket(){
         $key="wx_jsapi_ticket";
         $ticket=Redis::get($key);
