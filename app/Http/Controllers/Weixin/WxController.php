@@ -49,25 +49,47 @@ class WxController extends Controller
         //dump($obj);die;
         $kf_id = $obj->ToUserName;  //公众号ID
         $openid=$obj->FromUserName; //用户ID
-        $event=$obj->Event;    //事件类型
-        $msg_type=$obj->MsgType;    //消息类型
-        //echo $openid;die;
-        if($event=='subscribe'){
-            $event_key=$obj->EventKey;  //场景
-            //判断扫描的是普通二维码还是带参数的二维码
-            if($event_key==''){
-                //普通二维码
-                $userInfo=WxUserModel::where('openid','=',"$openid")->first();
-                if($userInfo){
-                    WxUserModel::where(['openid'=>$openid])->update(['status'=>1]);
-                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+        $msg_type=$obj->MsgType;    //消息类型（包括事件）
+        $event=$obj->Event;    //事件类型（消息类型为事件时，有此字段）
+        //全部事件
+        if($msg_type=='event'){
+            if($event=='subscribe'){
+                $event_key=$obj->EventKey;  //场景
+                //判断扫描的是普通二维码还是带参数的二维码
+                if($event_key==''){
+                    //普通二维码
+                    $userInfo=WxUserModel::where('openid','=',"$openid")->first();
+                    if($userInfo){
+                        WxUserModel::where(['openid'=>$openid])->update(['status'=>1]);
+                        echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
                             <Content><![CDATA['.'欢迎回来'.$userInfo['nickname'].']]></Content>
                        </xml>';
+                    }else{
+                        //获取新用户信息
+                        $info = $this->getUserInfo($openid);//对象格式
+                        //用户信息入库
+                        $data=[
+                            'openid'=>$info->openid,
+                            'nickname'=>$info->nickname,
+                            'sex'=>$info->sex,
+                            'headimgurl'=>$info->headimgurl,
+                            'subscribe_time'=>$info->subscribe_time
+                        ];
+                        $res = WxUserModel::insert($data);
+                        echo '<xml>
+                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>'.time().'</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA['.'欢迎关注'. $info->nickname .']]></Content>
+                          </xml>';
+                    }
                 }else{
-                    //获取新用户信息
+                    //带参数的二维码
+                    $event_key=substr($event_key,8);    //参数
                     $info = $this->getUserInfo($openid);//对象格式
                     //用户信息入库
                     $data=[
@@ -75,36 +97,15 @@ class WxController extends Controller
                         'nickname'=>$info->nickname,
                         'sex'=>$info->sex,
                         'headimgurl'=>$info->headimgurl,
-                        'subscribe_time'=>$info->subscribe_time
+                        'subscribe_time'=>$info->subscribe_time,
+                        'event_key'=>$event_key
                     ];
-                    $res = WxUserModel::insert($data);
-                    echo '<xml>
-                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-                            <CreateTime>'.time().'</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA['.'欢迎关注'. $info->nickname .']]></Content>
-                          </xml>';
-                }
-            }else{
-                //带参数的二维码
-                $event_key=substr($event_key,8);    //参数
-                $info = $this->getUserInfo($openid);//对象格式
-                //用户信息入库
-                $data=[
-                    'openid'=>$info->openid,
-                    'nickname'=>$info->nickname,
-                    'sex'=>$info->sex,
-                    'headimgurl'=>$info->headimgurl,
-                    'subscribe_time'=>$info->subscribe_time,
-                    'event_key'=>$event_key
-                ];
-                $res = TmpUserModel::insert($data);
-                $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
-                foreach($goods as $k=>$v){
-                    $img=$v['goods_img'];
-                    $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
-                    $res='<xml>
+                    $res = TmpUserModel::insert($data);
+                    $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
+                    foreach($goods as $k=>$v){
+                        $img=$v['goods_img'];
+                        $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
+                        $res='<xml>
                           <ToUserName><![CDATA['.$openid.']]></ToUserName>
                           <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                           <CreateTime>'.time().'</CreateTime>
@@ -119,17 +120,17 @@ class WxController extends Controller
                             </item>
                           </Articles>
                         </xml>';
-                    echo $res;
+                        echo $res;
+                    }
                 }
             }
-        }
-        if($event=='SCAN'){
-            //带参数的二维码
-            $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
-            foreach($goods as $k=>$v){
-                $img=$v['goods_img'];
-                $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
-                $res='<xml>
+            if($event=='SCAN'){
+                //带参数的二维码
+                $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
+                foreach($goods as $k=>$v){
+                    $img=$v['goods_img'];
+                    $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
+                    $res='<xml>
                           <ToUserName><![CDATA['.$openid.']]></ToUserName>
                           <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
                           <CreateTime>'.time().'</CreateTime>
@@ -144,12 +145,22 @@ class WxController extends Controller
                             </item>
                           </Articles>
                         </xml>';
-                echo $res;
+                    echo $res;
+                }
+            }
+            if($event=='unsubscribe'){
+                WxUserModel::where(['openid'=>$openid])->update(['status'=>0]);
+            }
+            //点击菜单拉取消息
+            $eventKey=$obj->EventKey;   //创建click菜单时设置的key值
+            if($event=='CLICK' && $event_key=='function declaration'){
+                $str="你好，欢迎关注！"."\n\n"."发送1 展示全部同学姓名"."\n\n"."发送2 回复最好看同学姓名".
+                    "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
+                    "\n\n"."发送城市+天气 查询该城市未来一周天气"."\n\n"."还有性感机器人在线陪聊哦    ~O(∩_∩)O~";
+                $this->sendTextMsg($openid,$str);
             }
         }
-        if($event=='unsubscribe'){
-            WxUserModel::where(['openid'=>$openid])->update(['status'=>0]);
-        }
+        //文本消息
         if($msg_type=='text'){
             //回复图文
             if($obj->Content=='最新商品') {
@@ -277,6 +288,7 @@ class WxController extends Controller
                 $this->sendTextMsg($openid,$arr['text']);
             }
         }
+        //图片消息
         if($msg_type=='image'){
             //$media_id=DB::select('SELECT media_id FROM material ORDER BY RAND() LIMIT 1');
             $media_id=MaterialModel::orderByRaw("RAND()")->first()->media_id;
@@ -291,13 +303,6 @@ class WxController extends Controller
                     <MediaId><![CDATA['.$media_id.']]></MediaId>
                   </Image>
                 </xml>';
-        }
-        //点击菜单拉取消息
-        if($event=='CLICK'){
-            $str="你好，欢迎关注！"."\n\n"."发送1 展示全部同学姓名"."\n\n"."发送2 回复最好看同学姓名".
-                "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
-                "\n\n"."发送城市+天气 查询该城市未来一周天气"."\n\n"."还有性感机器人在线陪聊哦    ~O(∩_∩)O~";
-            $this->sendTextMsg($openid,$str);
         }
     }
     //回复文本消息
@@ -386,7 +391,7 @@ class WxController extends Controller
         return $u;
     }
 
-    //菜单
+    //创建菜单
     public function createMent(){
         $redirect_url=urlEncode("http://1809niuyuechyuang.comcto.com/wx/getUinfo");
         $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
@@ -411,7 +416,7 @@ class WxController extends Controller
                         ],
                     ],
                 ],
-                [   'name'=>'更多..',
+                [   'name'=>'更多...',
                     'sub_button'=> [
                         ['type'=>'view',
                         'name'=>'最新福利',
