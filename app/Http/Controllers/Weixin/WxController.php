@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Weixin;
 
+use App\MaterialModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use App\WxUserModel;
@@ -13,6 +14,7 @@ use App\UserModel;
 use App\TmpUserModel;
 use App\PhoneModel;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class WxController extends Controller
 {
@@ -274,6 +276,21 @@ class WxController extends Controller
                 $arr=json_decode($res,true);
                 $this->sendTextMsg($openid,$arr['text']);
             }
+        }
+        if($msg_type=='image'){
+            $media_id=DB::select('SELECT media_id FROM material ORDER BY RAND() LIMIT 1');
+            $media_id=$media_id[0]->media_id;
+            //dd($media_id);die;
+            //回复图片
+            echo '<xml>
+                      <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                      <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                      <CreateTime>'.time().'</CreateTime>
+                      <MsgType><![CDATA[image]]></MsgType>
+                      <Image>
+                        <MediaId><![CDATA['.$media_id.']]></MediaId>
+                      </Image>
+                    </xml>';
         }
         //点击菜单拉取消息
         if($event=='CLICK'){
