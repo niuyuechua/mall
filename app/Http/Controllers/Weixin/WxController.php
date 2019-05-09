@@ -398,6 +398,19 @@ class WxController extends Controller
                     'name'=>'功能说明',
                     'key'=>'function declaration',
                 ],
+                [   'name'=>'娱乐',
+                    'sub_button'=> [
+                        ['type'=>'view',
+                            'name'=>'QQ音乐',
+                            'url'=>'http://y.qq.com/',
+                        ],
+                        [
+                            'type'=>'view',
+                            'name'=>'王者荣耀官网',
+                            'url'=>'https://pvp.qq.com/',
+                        ],
+                    ],
+                ],
                 [   'name'=>'更多..',
                     'sub_button'=> [
                         ['type'=>'view',
@@ -408,6 +421,11 @@ class WxController extends Controller
                             'type'=>'view',
                             'name'=>'签到',
                             'url'=>$url2,
+                        ],
+                        [
+                            "name"=> "发送位置",
+                            "type"=> "location_select",
+                            "key"=>"location"
                         ],
                     ],
                 ],
