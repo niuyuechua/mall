@@ -81,6 +81,13 @@ class ListController extends Controller
     {
         $grid = new Grid(new MaterialModel);
         $server_name=$_SERVER['SERVER_NAME'];
+        //删除media_id过期的图片（media_id有效期3天）
+        $data=MaterialModel::get();
+        foreach($data as $k=>$v){
+            if(time()-$v['created_at']>3*24*3600){
+                MaterialModel::where('id',$v['id'])->delete();
+            }
+        }
 
         $grid->id('Id');
         $grid->type('Type');
