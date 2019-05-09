@@ -86,7 +86,9 @@ class ListController extends Controller
         $grid->type('Type');
         $grid->media_id('Media id');
         $grid->img_url('Img url')->image('http://'.$server_name);    //lavarel后台根据此域名对应的文件夹去找图片
-        $grid->created_at('Created at');
+        $grid->created_at('上传时间')->display(function($created_at){
+            return date('Y-m-d H:i',$created_at);
+        });
 
         return $grid;
     }
