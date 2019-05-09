@@ -9,13 +9,13 @@
 </head>
 <body>
     <form action="/admin/material/addImg" method="post" enctype="multipart/form-data">
-        <tr>
-            <td><input type="file" value="添加素材" name="file"></td>
-        </tr>
-        <tr>
-            <td><input type="submit"></td>
-        </tr>
+        <div class="form-group">
+            <label for="exampleInputEmail1">请选择文件</label>
+            <input type="file" value="添加素材" name="file">
+        </div>
+        <button type="submit" class="btn btn-primary">提交</button>
         {{csrf_field()}}
     </form>
+
 </body>
 </html>

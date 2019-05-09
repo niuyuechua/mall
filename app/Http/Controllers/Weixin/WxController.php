@@ -398,15 +398,17 @@ class WxController extends Controller
                     'name'=>'功能说明',
                     'key'=>'function declaration',
                 ],
-                [
-                    'type'=>'view',
-                    'name'=>'最新福利',
-                    'url'=>$url2,
-                ],
-                [
-                    'type'=>'view',
-                    'name'=>'签到',
-                    'url'=>$url2,
+                [   'name'=>'更多..',
+                    'sub_button'=> [
+                        'type'=>'view',
+                        'name'=>'最新福利',
+                        'url'=>$url2,
+                    ],
+                    [
+                        'type'=>'view',
+                        'name'=>'签到',
+                        'url'=>$url2,
+                    ],
                 ],
             ],
         ];
