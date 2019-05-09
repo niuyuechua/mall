@@ -400,14 +400,15 @@ class WxController extends Controller
                 ],
                 [   'name'=>'更多..',
                     'sub_button'=> [
-                        'type'=>'view',
+                        ['type'=>'view',
                         'name'=>'最新福利',
                         'url'=>$url2,
-                    ],
-                    [
-                        'type'=>'view',
-                        'name'=>'签到',
-                        'url'=>$url2,
+                        ],
+                        [
+                            'type'=>'view',
+                            'name'=>'签到',
+                            'url'=>$url2,
+                        ],
                     ],
                 ],
             ],
