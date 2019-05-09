@@ -153,7 +153,7 @@ class WxController extends Controller
             }
             //点击菜单拉取消息
             $eventKey=$obj->EventKey;   //创建click菜单时设置的key值
-            if($event=='CLICK' && $event_key=='function declaration'){
+            if($event=='CLICK' && $eventKey=='function declaration'){
                 $str="你好，欢迎关注！"."\n\n"."发送1 展示全部同学姓名"."\n\n"."发送2 回复最好看同学姓名".
                     "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
                     "\n\n"."发送城市+天气 查询该城市未来一周天气"."\n\n"."还有性感机器人在线陪聊哦    ~O(∩_∩)O~";
