@@ -279,8 +279,7 @@ class WxController extends Controller
         }
         if($msg_type=='image'){
             $media_id=DB::select('SELECT media_id FROM material ORDER BY RAND() LIMIT 1');
-            $media_id=trim($media_id[0]->media_id);
-            //dd($media_id);die;
+            $media_id=$media_id[0]->media_id;
             //回复图片
             echo '<xml>
                   <ToUserName><![CDATA['.$openid.']]></ToUserName>
