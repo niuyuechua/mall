@@ -279,18 +279,18 @@ class WxController extends Controller
         }
         if($msg_type=='image'){
             $media_id=DB::select('SELECT media_id FROM material ORDER BY RAND() LIMIT 1');
-            $media_id=$media_id[0]->media_id;
+            $media_id=trim($media_id[0]->media_id);
             //dd($media_id);die;
             //回复图片
             echo '<xml>
-                      <ToUserName><![CDATA['.$openid.']]></ToUserName>
-                      <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-                      <CreateTime>'.time().'</CreateTime>
-                      <MsgType><![CDATA[image]]></MsgType>
-                      <Image>
-                        <MediaId><![CDATA['.$media_id.']]></MediaId>
-                      </Image>
-                    </xml>';
+                  <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                  <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                  <CreateTime>'.time().'</CreateTime>
+                  <MsgType><![CDATA[image]]></MsgType>
+                  <Image>
+                    <MediaId><![CDATA['.$media_id.']]></MediaId>
+                  </Image>
+                </xml>';
         }
         //点击菜单拉取消息
         if($event=='CLICK'){
