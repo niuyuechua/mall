@@ -86,7 +86,7 @@ class NewsController extends Controller
         ];
         return view('admin.news',$data);
     }
-
+    //群发消息
     public function sendMessage(){
         echo 111;die;
         $client=new Client();

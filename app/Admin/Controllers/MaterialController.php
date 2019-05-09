@@ -93,7 +93,7 @@ class MaterialController extends Controller
 //        return $grid;
         return view('admin.addImg');
     }
-    //guzzle上传临时素材
+
     public function addImg(Request $request){
         $fileInfo=$request->file('file');
         //dump($fileInfo);
@@ -102,13 +102,13 @@ class MaterialController extends Controller
         //生成新文件名 （规则：时间+随机字符串+原始文件扩展名）
         $new_filename=date('ymd').'_'.Str::random(10).'.'.$ext;
         $save_path='upload';
-        //保存文件
+        //保存文件（lavarel上传文件）
         $res=$fileInfo->storeAs($save_path,$new_filename);      //默认保存在 storage/app/$save_path
         //var_dump($res);die;       //返回文件保存路径
         $access_token=$this->getAccessToken();
         $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type=image';
 
-//      curl上传临时素材
+          //curl上传临时素材
 //        $res="/wwwroot/mall/public/".$res;
 //        $imgPath=new \CURLFile($res);
 //        $post_data=[
@@ -117,6 +117,7 @@ class MaterialController extends Controller
 //        $data=$this->curlPost($url,$imgPath);
 //        dump($data);die;
 
+        //guzzle上传临时素材
         $client = new Client();
         $response = $client->request('post',$url,[
             'multipart' => [
@@ -128,7 +129,7 @@ class MaterialController extends Controller
         ]);
         $json =  $response->getBody();
         $arr=json_decode($json,true);
-        dump($arr);die;
+        //dump($arr);die;
         $arr['img_url']=$res;
         $res2=MaterialModel::insert($arr);
         if($res2){

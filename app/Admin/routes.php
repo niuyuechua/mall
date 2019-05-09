@@ -18,7 +18,7 @@ Route::group([
     $router->resource('/list', ListController::class);
     $router->resource('/news', NewsController::class);
     //$router->get('/news/sendMessage', 'NewsController@sendMessage')->name('admin.news');
-    Route::get('news/sendMessage','NewsController@sendMessage');
+    Route::get('/news/sendMessage','NewsController@sendMessage');
 });
 //Route::get('/material','Admin\MaterialController@grid');
 //Route::any('/material/addImg','Admin\MaterialController@addImg');

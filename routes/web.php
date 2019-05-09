@@ -36,7 +36,7 @@ Route::get('wx/createMent','Weixin\WxController@createMent');
 Route::get('pay/test','Weixin\WxPayController@test');
 Route::post('pay/notice','Weixin\WxPayController@notice');
 //计划任务
-Route::get('crontab/del','crontab\CrontabController@del');
+Route::get('crontab/del','crontab\CrontabControllr@del');
 //获取授权后重定向的回调连接地址
 Route::get('test/urlencode',function(){
     echo urlEncode($_GET['url']);
