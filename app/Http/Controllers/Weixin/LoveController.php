@@ -56,17 +56,18 @@ class LoveController extends Controller
                 $this->sendTextMsg($openid,$str);
             }elseif($act_name=='输入表白人名字'){
                 //表白内容入库
+                $id=ActModel::orderBy('id','desc')->first()->id;
                 $content=$obj->Content;
-                LoveModel::where(['openid'=>$openid])->update(['content'=>$content]);
+                LoveModel::where(['id'=>$id])->update(['content'=>$content]);
                 $str="表白成功";
                 $this->sendTextMsg($openid,$str);
             }elseif($act_name=='查看表白'){
                 $name=$obj->Content;
                 $data=LoveModel::where(['name'=>$name])->get();
-                if(empty($data)){
+                $num=count($data,1);
+                if($num==0){
                     $str="$name 还未被表白";
                 }else{
-                    $num=count($data,1);
                     $content='';
                     foreach($data as $k=>$v){
                         $content.=$v['content']."\n";
