@@ -33,7 +33,8 @@ Route::post('wx/valid','Weixin\LoveController@wxEvent');
 Route::get('wx/goodsDetail','Weixin\WxController@goodsDetail');
 Route::get('wx/phoneDetail','Weixin\WxController@phoneDetail');
 //自定义菜单
-Route::get('wx/createMent','Weixin\WxController@createMent');
+//Route::get('wx/createMent','Weixin\WxController@createMent');
+Route::get('wx/createMent','Weixin\LoveController@createMent');
 //支付
 Route::get('pay/test','Weixin\WxPayController@test');
 Route::post('pay/notice','Weixin\WxPayController@notice');

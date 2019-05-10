@@ -129,5 +129,13 @@ class LoveController extends Controller
         $responce = $client->request('POST', $url, [
             'body' => $json_str
         ]);
+        //处理响应
+        $res_str=$responce->getBody();
+        $arr=json_decode($res_str,true);
+        if($arr['errcode']==0){
+            echo "创建菜单成功";
+        }else{
+            echo '创建菜单失败';
+        }
     }
 }
