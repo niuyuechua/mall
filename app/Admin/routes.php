@@ -16,6 +16,7 @@ Route::group([
     $router->resource('/material', MaterialController::class);
     $router->post('/material/addImg', 'MaterialController@addImg')->name('admin.material');
     $router->resource('/list', ListController::class);
+    $router->resource('/lists', ListsController::class);
     $router->resource('/news', NewsController::class);
     //$router->get('/news/sendMessage', 'NewsController@sendMessage')->name('admin.news');
     Route::get('/news/sendMessage','NewsController@sendMessage');

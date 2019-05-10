@@ -20,10 +20,12 @@ Route::get('/info',function(){
 });
 
 //微信公众平台
-Route::get('wx/valid','Weixin\WxController@valid');
+//Route::get('wx/valid','Weixin\WxController@valid');
+//Route::post('wx/valid','Weixin\WxController@wxEvent');
 Route::get('wx/getAccessToken','Weixin\WxController@getAccessToken');
 Route::get('wx/test','Weixin\WxController@test');
-Route::post('wx/valid','Weixin\WxController@wxEvent');
+Route::get('wx/valid','Weixin\LoveController@valid');
+Route::post('wx/valid','Weixin\LoveController@wxEvent');
 //月考机试
 //Route::post('wx/valid','Weixin\ExamController@wxEvent');
 //Route::get('wx/getAccessToken','Weixin\ExamController@getAccessToken');

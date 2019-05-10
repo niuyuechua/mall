@@ -135,7 +135,7 @@ class MaterialController extends Controller
         ]);
         $json =  $response->getBody();
         $arr=json_decode($json,true);
-        //dump($arr);die;
+        dump($arr);die;
         $arr['img_url']=$res;
         if($type==1){
             $res2=MaterialModel::insert($arr);
