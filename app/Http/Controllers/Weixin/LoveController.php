@@ -73,8 +73,8 @@ class LoveController extends Controller
                         $content.=$v['content']."\n";
                     }
                     $str="$name 被表白次数：$num"."\n"."表白内容："."\n".$content;
-                    $this->sendTextMsg($openid,$str);
                 }
+                $this->sendTextMsg($openid,$str);
             }
         }
     }
