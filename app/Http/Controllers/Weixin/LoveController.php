@@ -56,7 +56,7 @@ class LoveController extends Controller
                 $this->sendTextMsg($openid,$str);
             }elseif($act_name=='输入表白人名字'){
                 //表白内容入库
-                $id=ActModel::orderBy('id','desc')->first()->id;
+                $id=LoveModel::orderBy('id','desc')->first()->id;
                 $content=$obj->Content;
                 LoveModel::where(['id'=>$id])->update(['content'=>$content]);
                 $str="表白成功";
