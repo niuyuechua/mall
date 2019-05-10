@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\ActModel;
 use App\LoveModel;
+use GuzzleHttp\Client;
 
 class LoveController extends Controller
 {
@@ -123,7 +124,7 @@ class LoveController extends Controller
         ];
         $json_str = json_encode($post_arr, JSON_UNESCAPED_UNICODE);   //加参数二可处理含中文的数组
         //dd($json_str);die;
-        $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' . $this->getAccessToken();
+        $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' . getAccessToken();
         //请求接口
         $client = new Client();
         $responce = $client->request('POST', $url, [
