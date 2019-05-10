@@ -40,7 +40,7 @@ class LoveController extends Controller
                 $this->sendTextMsg($openid,$str);
             }
         }
-        if($event=='text'){
+        if($msg_type=='text'){
             $act_name=ActModel::orderBy('act_time','desc')->first()->act_name;
             if($act_name=='我要表白'){
                 //根据用户上一步执行的操作，判断本步执行的操作（输入表白人名字）
