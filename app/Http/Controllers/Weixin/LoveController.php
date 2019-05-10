@@ -29,7 +29,7 @@ class LoveController extends Controller
         $msg_type=$obj->MsgType;    //消息类型（包括事件）
         $event=$obj->Event;    //事件类型（消息类型为事件时，有此字段）
         $eventKey=$obj->EventKey;   //创建click菜单时设置的key值i
-        if($event=='event'){
+        if($msg_type=='event'){
             if($event=='CLICK' && $eventKey=='love'){
                 $this->act($openid,"我要表白");
                 $str="请输入你要表白的人的名字";
