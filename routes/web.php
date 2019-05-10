@@ -20,12 +20,12 @@ Route::get('/info',function(){
 });
 
 //微信公众平台
-//Route::get('wx/valid','Weixin\WxController@valid');
-//Route::post('wx/valid','Weixin\WxController@wxEvent');
+Route::get('wx/valid','Weixin\WxController@valid');
+Route::post('wx/valid','Weixin\WxController@wxEvent');
 Route::get('wx/getAccessToken','Weixin\WxController@getAccessToken');
 Route::get('wx/test','Weixin\WxController@test');
-Route::get('wx/valid','Weixin\LoveController@valid');
-Route::post('wx/valid','Weixin\LoveController@wxEvent');
+//Route::get('wx/valid','Weixin\LoveController@valid');       //表白墙
+//Route::post('wx/valid','Weixin\LoveController@wxEvent');        //表白墙
 //月考机试
 //Route::post('wx/valid','Weixin\ExamController@wxEvent');
 //Route::get('wx/getAccessToken','Weixin\ExamController@getAccessToken');
@@ -33,8 +33,8 @@ Route::post('wx/valid','Weixin\LoveController@wxEvent');
 Route::get('wx/goodsDetail','Weixin\WxController@goodsDetail');
 Route::get('wx/phoneDetail','Weixin\WxController@phoneDetail');
 //自定义菜单
-//Route::get('wx/createMent','Weixin\WxController@createMent');
-Route::get('wx/createMent','Weixin\LoveController@createMent');
+Route::get('wx/createMent','Weixin\WxController@createMent');
+//Route::get('wx/createMent','Weixin\LoveController@createMent');     //表白墙
 //支付
 Route::get('pay/test','Weixin\WxPayController@test');
 Route::post('pay/notice','Weixin\WxPayController@notice');
