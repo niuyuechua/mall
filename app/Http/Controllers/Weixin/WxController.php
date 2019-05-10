@@ -158,6 +158,10 @@ class WxController extends Controller
                     "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
                     "\n\n"."发送城市+天气 查询该城市未来一周天气"."\n\n"."还有性感机器人在线陪聊哦    ~O(∩_∩)O~";
                 $this->sendTextMsg($openid,$str);
+            }elseif($event=='CLICK' && $eventKey=='love'){
+                $str="请输入你要表白的人的名字";
+            }elseif($event=='CLICK' && $eventKey=='Looking for love'){
+
             }
         }
         //文本消息
@@ -413,6 +417,16 @@ class WxController extends Controller
                             'type'=>'view',
                             'name'=>'王者荣耀官网',
                             'url'=>'https://pvp.qq.com/',
+                        ],
+                        [
+                            'type'=>'click',
+                            'name'=>'我要表白',
+                            'key'=>'love',
+                        ],
+                        [
+                            'type'=>'click',
+                            'name'=>'表白墙',
+                            'key'=>'Looking for love',
                         ],
                     ],
                 ],

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
+use App\MaterialsModel;
 
 class MaterialController extends Controller
 {
@@ -97,6 +98,7 @@ class MaterialController extends Controller
     public function addImg(Request $request){
         $fileInfo=$request->file('file');
         //dump($fileInfo);
+        $type=$request->type;   //素材类型
         $filename=$fileInfo->getClientOriginalName();   //原始文件名
         $ext=$fileInfo->getClientOriginalExtension();   //原始文件扩展名
         //生成新文件名 （规则：时间+随机字符串+原始文件扩展名）
@@ -106,7 +108,11 @@ class MaterialController extends Controller
         $res=$fileInfo->storeAs($save_path,$new_filename);      //默认保存在 storage/app/$save_path
         //var_dump($res);die;       //返回文件保存路径
         $access_token=$this->getAccessToken();
-        $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type=image';
+        if($type==1){
+            $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type=image';
+        }elseif($type==2){
+            $url = 'https://api.weixin.qq.com/cgi-bin/material/add_material?access_token='.$access_token.'&type=image';
+        }
 
           //curl上传临时素材
 //        $res="/wwwroot/mall/public/".$res;
@@ -131,7 +137,13 @@ class MaterialController extends Controller
         $arr=json_decode($json,true);
         //dump($arr);die;
         $arr['img_url']=$res;
-        $res2=MaterialModel::insert($arr);
+        if($type==1){
+            $res2=MaterialModel::insert($arr);
+        }else{
+            $arr['type']='perpetual image';
+            $arr['upload_time']=time();
+            $res2=MaterialsModel::insert($arr);
+        }
         if($res2){
             echo '素材上传成功';
         }else{
