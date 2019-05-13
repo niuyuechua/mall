@@ -20,6 +20,10 @@ Route::group([
     $router->resource('/news', NewsController::class);
     //$router->get('/news/sendMessage', 'NewsController@sendMessage')->name('admin.news');
     Route::get('/news/sendMessage','NewsController@sendMessage');
+    $router->resource('/menu', MenuController::class);
+    $router->post('/menu/addMenu', 'MenuController@addMenu')->name('admin.menu');
+    $router->resource('/menulist', MenulistController::class);
+    Route::get('createMenu','MenulistController@createMenu');
 });
 //Route::get('/material','Admin\MaterialController@grid');
 //Route::any('/material/addImg','Admin\MaterialController@addImg');
