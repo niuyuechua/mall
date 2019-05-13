@@ -106,7 +106,7 @@ class MaterialController extends Controller
         $save_path='upload';
         //保存文件（lavarel上传文件）
         $res=$fileInfo->storeAs($save_path,$new_filename);      //默认保存在 storage/app/$save_path
-        //var_dump($res);die;       //返回文件保存路径
+        //var_dump($res);die;       //返回文件保存路径（$save_path/新文件名）
         $access_token=$this->getAccessToken();
         if($type==1){
             $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type=image';
@@ -135,7 +135,7 @@ class MaterialController extends Controller
         ]);
         $json =  $response->getBody();
         $arr=json_decode($json,true);
-        dump($arr);die;
+        //dump($arr);die;
         $arr['img_url']=$res;
         if($type==1){
             $res2=MaterialModel::insert($arr);
