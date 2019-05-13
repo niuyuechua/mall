@@ -10,6 +10,15 @@
 <body>
     <form action="/admin/menu/addMenu" method="post">
         <div class="form-group">
+            <label for="exampleFormControlSelect1">父级菜单</label>
+            <select class="form-control" id="exampleFormControlSelect1" name="parent_id">
+                <option value="0">无父级</option>
+                @foreach($info as $v)
+                <option value="{{$v['id']}}">{{$v['menu_name']}}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-group">
             <label for="exampleInputEmail1">菜单名称</label>
             <input type="text" name="menu_name">
         </div>
@@ -18,6 +27,7 @@
             <select class="form-control" id="exampleFormControlSelect1" name="menu_type">
                 <option value="view">view</option>
                 <option value="click">click</option>
+                <option value="location_select">location_select</option>
             </select>
         </div>
         <div class="form-group">

@@ -89,21 +89,47 @@ class MenuController extends Controller
 //        $grid->menu_key('Menu key');
 //
 //        return $grid;
-        return view('admin.menu.addMenu');
+        $info=MenuModel::where(['parent_id'=>0])->get()->toArray();
+        $menu=[
+            'info'=>$info
+        ];
+        return view('admin.menu.addMenu',$menu);
     }
     public function addMenu(Request $request){
         $data=$request->input();
-        //dump($data);
+        //判断菜单信息
+        $info=MenuModel::where(['parent_id'=>0])->get();
+        if($data['parent_id']==0){      //一级菜单
+            //判断菜单名称长度
+            if(strlen($data['menu_name'])>12){
+                echo "一级菜单名最多4个汉字";die;
+            }
+            //判断菜单个数
+            $num=count($info,1);
+            if($num>=3){
+                echo "一级菜单不能超过3个";die;
+            }
+        }else{                           //二级菜单
+            //判断菜单名称长度
+            if(strlen($data['menu_name'])>21){
+                echo "二级菜单名最多7个汉字";die;
+            }
+            //判断菜单个数
+            foreach($info as $k=>$v){
+                $sc_info=MenuModel::where(['parent_id'=>$v['id']])->get();
+                $sc_num=count($sc_info);
+                if($sc_num>=5){
+                    echo "二级菜单不能超过5个";die;
+                }
+            }
+        }
+        //菜单信息入库
         $data=[
             'menu_name'=>$data['menu_name'],
             'menu_type'=>$data['menu_type'],
             'menu_key'=>$data['menu_key'],
+            'parent_id'=>$data['parent_id'],
         ];
-        $info=MenuModel::get();
-        $num=count($info,1);
-        if($num>=3){
-            echo "菜单不能超过3个";die;
-        }
         $res=MenuModel::insert($data);
         if($res){
             echo "菜单添加成功";

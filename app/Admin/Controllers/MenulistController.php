@@ -87,6 +87,13 @@ class MenulistController extends Controller
         $grid->menu_name('菜单名称');
         $grid->menu_type('菜单类型');
         $grid->menu_key('菜单标识');
+        $grid->parent_id('菜单级别')->display(function($parent_id){
+            if($parent_id==0){
+                return "一级菜单";
+            }else{
+                return "二级菜单";
+            }
+        });
 
         return $grid;
     }
@@ -95,24 +102,35 @@ class MenulistController extends Controller
         return view('admin.menu.button');
     }
     public function createMenu(){
-        $menu_data=MenuModel::get()->toArray();
+        $menu_data=MenuModel::where(['parent_id'=>0])->get()->toArray();
         //dump($menu_data);
         $post_arr=[];
+        //优化
+        $type_arr=[
+            'click'=>'key',
+            'view'=>'url'
+        ];
         foreach($menu_data as $k=>$v){
-            if($v['menu_type']=='click'){
-                $post_arr['button'][]=[
-                    'type'=>'click',
-                    'name'=>$v['menu_name'],
-                    'key'=>$v['menu_key'],
-                ];
+            $sc_menu=MenuModel::where(['parent_id'=>$v['id']])->get()->toArray();
+            if($sc_menu){
+                MenuModel::where(['id'=>$v['id']])->update(['menu_type'=>'','menu_key'=>'']);
+                $post_arr['button'][$k]['name']=$v['menu_name'];
+                foreach($sc_menu as $key=>$value){
+                    $post_arr['button'][$k]['sub_button'][]=[
+                        'type'=>$value['menu_type'],
+                        'name'=>$value['menu_name'],
+                        $type_arr[$value['menu_type']]=>$value['menu_key'],
+                    ];
+                }
             }else{
                 $post_arr['button'][]=[
-                    'type'=>'view',
+                    'type'=>$v['menu_type'],
                     'name'=>$v['menu_name'],
-                    'key'=>$v['menu_key'],
+                    $type_arr[$v['menu_type']]=>$v['menu_key'],
                 ];
             }
         }
+        //dump($post_arr);die;
         $json_str=json_encode($post_arr, JSON_UNESCAPED_UNICODE);
         $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.getAccessToken();
         //请求接口
