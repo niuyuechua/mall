@@ -101,6 +101,7 @@ class MenulistController extends Controller
     public function button(){
         return view('admin.menu.button');
     }
+    //同步微信菜单
     public function createMenu(){
         $menu_data=MenuModel::where(['parent_id'=>0])->get()->toArray();
         //dump($menu_data);
@@ -108,7 +109,8 @@ class MenulistController extends Controller
         //优化
         $type_arr=[
             'click'=>'key',
-            'view'=>'url'
+            'view'=>'url',
+            'location_select'=>'key'
         ];
         foreach($menu_data as $k=>$v){
             $sc_menu=MenuModel::where(['parent_id'=>$v['id']])->get()->toArray();
