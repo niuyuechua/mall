@@ -144,8 +144,8 @@ class NewsController extends Controller
     public function test2(){
         $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".getAccessToken();
         $post_data='{
-           "touser":"Qbf0DYHn2z6tEjLcwzQYNyT7k_jIufqXIrQ1xP87Q0M",
-           "template_id":"VW1E41h0D6DeWERoPsOU9PmoL5Shpb0LDfzYbIze8K0",
+           "touser":"oSBfr5rWb5tS3_TEj3y2vwJNWexo",
+           "template_id":"Qbf0DYHn2z6tEjLcwzQYNyT7k_jIufqXIrQ1xP87Q0M",
            "url":"https://pvp.qq.com/",          
            "data":{
                 "money": {
