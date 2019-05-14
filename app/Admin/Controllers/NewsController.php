@@ -109,9 +109,9 @@ class NewsController extends Controller
         $arr_res=json_decode($json,true);
         //dump($arr_res);
         if($arr_res['errcode']==0){
-            echo '群发成功';
+            echo 'success';
         }else{
-            echo '群发失败';
+            echo 'error';
         }
     }
 

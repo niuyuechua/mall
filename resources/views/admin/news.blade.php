@@ -62,7 +62,11 @@
             type:'get',
             dataType:'json',
             success:function(res){
-                alert(res);
+                if(res=='success'){
+                    alert("群发成功");
+                }else{
+                    alert("群发失败");
+                }
             }
         })
     })
