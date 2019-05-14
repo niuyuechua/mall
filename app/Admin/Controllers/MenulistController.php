@@ -27,7 +27,11 @@ class MenulistController extends Controller
             ->header('Index')
             ->description('description')
             ->body($this->grid())
-            ->row($this->button());     //一键同步按钮
+            ->row($this->button())     //一键同步按钮
+            ->breadcrumb(
+                ['text' => '首页管理', 'url' => '/admin'],
+                ['text' => '菜单列表', 'url' => '/admin']
+            );
     }
 
     /**

@@ -108,6 +108,7 @@ class MaterialController extends Controller
         $res=$fileInfo->storeAs($save_path,$new_filename);      //默认保存在 storage/app/$save_path
         //var_dump($res);die;       //返回文件保存路径（$save_path/新文件名）
         $access_token=$this->getAccessToken();
+        $url='';
         if($type==1){
             $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type=image';
         }elseif($type==2){
@@ -129,13 +130,13 @@ class MaterialController extends Controller
             'multipart' => [
                 [
                     'name' => 'filename',
-                    'contents' => fopen($res, 'r'),
+                    'contents' => fopen($res,'r'),
                 ]
             ]
         ]);
         $json =  $response->getBody();
         $arr=json_decode($json,true);
-        //dump($arr);die;
+        dump($arr);die;
         $arr['img_url']=$res;
         if($type==1){
             $res2=MaterialModel::insert($arr);
