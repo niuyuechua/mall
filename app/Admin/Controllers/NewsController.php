@@ -122,7 +122,7 @@ class NewsController extends Controller
             "is_to_all"=>true,
            ],
            "text"=>[
-                    "content"=>"卫龙辣条真好吃"
+                    "content"=>"卫龙辣条真好吃!!!"
            ],
             "msgtype"=>"text"
         ];
@@ -145,7 +145,7 @@ class NewsController extends Controller
         $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".getAccessToken();
         $post_data='{
            "touser":"oSBfr5rWb5tS3_TEj3y2vwJNWexo",
-           "template_id":"CTTXckBH4B6IadFxe-0xARuPuVjy7YMH02NikZqPHfk",
+           "template_id":"VW1E41h0D6DeWERoPsOU9PmoL5Shpb0LDfzYbIze8K0",
            "url":"https://pvp.qq.com/",          
            "data":{
                 "money": {
@@ -164,7 +164,7 @@ class NewsController extends Controller
         ]);
         $json_res=$res->getBody();
         $arr_res=json_decode($json_res,true);
-        //dump($arr_res);
+        dump($arr_res);
         if($arr_res['errcode']==0){
             echo '模板消息发送成功';
         }else{
