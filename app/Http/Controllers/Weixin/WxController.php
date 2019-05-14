@@ -15,6 +15,8 @@ use App\TmpUserModel;
 use App\PhoneModel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\ActModel;
+use App\LoveModel;
 
 class WxController extends Controller
 {
@@ -158,10 +160,61 @@ class WxController extends Controller
                     "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
                     "\n\n"."发送城市+天气 查询该城市未来一周天气"."\n\n"."还有性感机器人在线陪聊哦    ~O(∩_∩)O~";
                 $this->sendTextMsg($openid,$str);
+            }elseif($msg_type=='event'){
+                if($event=='CLICK' && $eventKey=='love'){
+                    $this->act($openid,"我要表白");
+                    $str="请输入你要表白的人的名字";
+                    $this->sendTextMsg($openid,$str);
+                }elseif($event=='CLICK' && $eventKey=='Looking for love'){
+                    $this->act($openid,"查看表白");
+                    $str="请输入要查询的人的名字";
+                    $this->sendTextMsg($openid,$str);
+                }
             }
         }
         //文本消息
         if($msg_type=='text'){
+            //表白墙
+            $last_act=ActModel::orderBy('act_time','desc')->first();
+            $act_time=$last_act->act_time;
+            if(time()-$act_time<=60){
+                $act_name=$last_act->act_name;
+                if($act_name=='我要表白'){
+                    //根据用户上一步执行的操作，判断本步执行的操作（输入表白人名字）
+                    $this->act($openid,"输入表白人名字");
+                    //表白人名字入库
+                    $arr=[
+                        'openid'=>$openid,
+                        'name'=>$obj->Content,
+                        'content'=>''
+                    ];
+                    LoveModel::insert($arr);
+                    $str="请输入表白内容";
+                    $this->sendTextMsg($openid,$str);
+                }elseif($act_name=='输入表白人名字'){
+                    //表白内容入库
+                    $id=LoveModel::orderBy('id','desc')->first()->id;
+                    $content=$obj->Content;
+                    LoveModel::where(['id'=>$id])->update(['content'=>$content]);
+                    $str="表白成功";
+                    $this->sendTextMsg($openid,$str);
+                }elseif($act_name=='查看表白'){
+                    $name=$obj->Content;
+                    $data=LoveModel::where(['name'=>$name])->get();
+                    $num=count($data,1);
+                    if($num==0){
+                        $str="$name 还未被表白";
+                    }else{
+                        $content='';
+                        foreach($data as $k=>$v){
+                            $content.=$v['content']."\n";
+                        }
+                        $str="$name 被表白次数：$num"."\n"."表白内容："."\n".$content;
+                    }
+                    $this->sendTextMsg($openid,$str);
+                }
+                die;
+            }
             //回复图文
             if($obj->Content=='最新商品') {
                 $goods = GoodsModel::orderby('create_time', 'desc')->limit(5)->get()->toArray();
@@ -304,6 +357,15 @@ class WxController extends Controller
                   </Image>
                 </xml>';
         }
+    }
+    //表白墙记录上一步动作的返回数据
+    public function act($openid,$str){
+        $arr=[
+            'openid'=>$openid,
+            'act_name'=>$str,
+            'act_time'=>time()
+        ];
+        ActModel::insert($arr);
     }
     //回复文本消息
     public function sendTextMsg($openid,$str){

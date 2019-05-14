@@ -28,7 +28,7 @@ class LoveController extends Controller
         $openid=$obj->FromUserName; //用户ID
         $msg_type=$obj->MsgType;    //消息类型（包括事件）
         $event=$obj->Event;    //事件类型（消息类型为事件时，有此字段）
-        $eventKey=$obj->EventKey;   //创建click菜单时设置的key值i
+        $eventKey=$obj->EventKey;   //创建click菜单时设置的key值
         if($msg_type=='event'){
             if($event=='CLICK' && $eventKey=='love'){
                 $this->act($openid,"我要表白");
@@ -40,8 +40,10 @@ class LoveController extends Controller
                 $this->sendTextMsg($openid,$str);
             }
         }
-        if($msg_type=='text'){
-            $act_name=ActModel::orderBy('act_time','desc')->first()->act_name;
+        $last_act=ActModel::orderBy('act_time','desc')->first();
+        $act_time=$last_act->act_time;
+        if($msg_type=='text' && time()-$act_time<=60){
+            $act_name=$last_act->act_name;
             if($act_name=='我要表白'){
                 //根据用户上一步执行的操作，判断本步执行的操作（输入表白人名字）
                 $this->act($openid,"输入表白人名字");
