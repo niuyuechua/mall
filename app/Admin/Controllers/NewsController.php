@@ -133,7 +133,43 @@ class NewsController extends Controller
         ]);
         $json_res=$res->getBody();
         $arr_res=json_decode($json_res,true);
-        dump($arr_res);
+        //dump($arr_res);
+        if($arr_res['errcode']==0){
+            echo '群发成功';
+        }else{
+            echo '群发失败';
+        }
+    }
+    //方式模板消息（测试）
+    public function test2(){
+        $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".getAccessToken();
+        $post_data='{
+           "touser":"oSBfr5rWb5tS3_TEj3y2vwJNWexo",
+           "template_id":"CTTXckBH4B6IadFxe-0xARuPuVjy7YMH02NikZqPHfk",
+           "url":"https://pvp.qq.com/",          
+           "data":{
+                "money": {
+                    "value":"10.00",
+                       "color":"#173177"
+                   },
+                   "man":{
+                    "value":"小碗菜",
+                       "color":"#173177"
+                   }
+           }
+        }';
+        $client=new Client();
+        $res=$client->request('POST',$url,[
+            'body'=>$post_data
+        ]);
+        $json_res=$res->getBody();
+        $arr_res=json_decode($json_res,true);
+        //dump($arr_res);
+        if($arr_res['errcode']==0){
+            echo '模板消息发送成功';
+        }else{
+            echo '模板消息发送失败';
+        }
     }
     /**
      * Make a show builder.

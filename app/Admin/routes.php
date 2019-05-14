@@ -25,6 +25,7 @@ Route::group([
     $router->resource('/menulist', MenulistController::class);
     Route::get('createMenu','MenulistController@createMenu');
     Route::get('/test','NewsController@test');
+    Route::get('/test2','NewsController@test2');
 });
 //Route::get('/material','Admin\MaterialController@grid');
 //Route::any('/material/addImg','Admin\MaterialController@addImg');
