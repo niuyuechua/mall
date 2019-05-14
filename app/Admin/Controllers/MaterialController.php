@@ -98,7 +98,9 @@ class MaterialController extends Controller
     public function addImg(Request $request){
         $fileInfo=$request->file('file');
         //dump($fileInfo);
-        $type=$request->type;   //素材类型
+        $media_name=$request->media_name;       //媒体文件名称
+        $material_type=$request->material_type;     //素材类型
+        $type=$request->type;       //媒体文件类型
         $filename=$fileInfo->getClientOriginalName();   //原始文件名
         $ext=$fileInfo->getClientOriginalExtension();   //原始文件扩展名
         //生成新文件名 （规则：时间+随机字符串+原始文件扩展名）
@@ -109,10 +111,10 @@ class MaterialController extends Controller
         //var_dump($res);die;       //返回文件保存路径（$save_path/新文件名）
         $access_token=$this->getAccessToken();
         $url='';
-        if($type==1){
-            $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type=image';
-        }elseif($type==2){
-            $url = 'https://api.weixin.qq.com/cgi-bin/material/add_material?access_token='.$access_token.'&type=image';
+        if($material_type==1){
+            $url = 'https://api.weixin.qq.com/cgi-bin/media/upload?access_token='.$access_token.'&type='.$type.'';
+        }elseif($material_type==2){
+            $url = 'https://api.weixin.qq.com/cgi-bin/material/add_material?access_token='.$access_token.'&type='.$type.'';
         }
 
           //curl上传临时素材
@@ -126,6 +128,17 @@ class MaterialController extends Controller
 
         //guzzle上传临时素材
         $client = new Client();
+        if($material_type==2 && $type=='video'){
+            $response = $client->request('post',$url,[
+                'multipart' => [
+                    [
+                        'name' => 'filename',
+                        'contents' => fopen($res,'r'),      //通过POST表单来调用接口（$res）
+                        'description'=>'{"title":永久视频素材,"introduction":永久视频素材需要POST另一个表单}'
+                    ]
+                ]
+            ]);
+        }
         $response = $client->request('post',$url,[
             'multipart' => [
                 [
@@ -136,15 +149,15 @@ class MaterialController extends Controller
         ]);
         $json =  $response->getBody();
         $arr=json_decode($json,true);
-        dump($arr);die;
-        $arr['img_url']=$res;
-        if($type==1){
-            $res2=MaterialModel::insert($arr);
-        }else{
-            $arr['type']='perpetual image';
-            $arr['upload_time']=time();
-            $res2=MaterialsModel::insert($arr);
+        //dump($arr);die;
+        $arr['url']=$res;
+        $arr['media_name']=$media_name;
+        $arr['material_type']=$material_type;
+        if($material_type==2){
+            $arr['type']=$type;
+            $arr['created_at']=time();
         }
+        $res2=MaterialModel::insert($arr);
         if($res2){
             echo '素材上传成功';
         }else{

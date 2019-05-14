@@ -213,7 +213,6 @@ class WxController extends Controller
                     }
                     $this->sendTextMsg($openid,$str);
                 }
-                
             }
             //回复图文
             if($obj->Content=='最新商品') {
