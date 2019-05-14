@@ -60,10 +60,10 @@
         $.ajax({
             url : 'sendMessage?openid='+openid+'&text='+text,
             type:'get',
-            dataType:'json'
-            // success:function(res){
-            //     alert(res);
-            // }
+            dataType:'json',
+            success:function(res){
+                alert(res);
+            }
         })
     })
 </script>
