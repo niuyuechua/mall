@@ -122,7 +122,7 @@ class NewsController extends Controller
             "is_to_all"=>true,
            ],
            "text"=>[
-                    "content"=>"卫龙辣条真好吃!!!"
+                    "content"=>"卫龙辣条真好吃 ~O(∩_∩)O~"
            ],
             "msgtype"=>"text"
         ];
@@ -144,7 +144,7 @@ class NewsController extends Controller
     public function test2(){
         $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".getAccessToken();
         $post_data='{
-           "touser":"oSBfr5rWb5tS3_TEj3y2vwJNWexo",
+           "touser":"Qbf0DYHn2z6tEjLcwzQYNyT7k_jIufqXIrQ1xP87Q0M",
            "template_id":"VW1E41h0D6DeWERoPsOU9PmoL5Shpb0LDfzYbIze8K0",
            "url":"https://pvp.qq.com/",          
            "data":{
