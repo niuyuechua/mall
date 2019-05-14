@@ -58,7 +58,7 @@
             return false;
         }
         $.ajax({
-            url : 'news/sendMessage?openid='+openid+'&text='+text,
+            url : 'sendMessage?openid='+openid+'&text='+text,
             type:'get',
             dataType:'json'
             // success:function(res){

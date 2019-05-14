@@ -19,7 +19,7 @@ Route::group([
     $router->resource('/lists', ListsController::class);
     $router->resource('/news', NewsController::class);
     //$router->get('/news/sendMessage', 'NewsController@sendMessage')->name('admin.news');
-    Route::get('/news/sendMessage','NewsController@sendMessage');
+    Route::get('/sendMessage','NewsController@sendMessage');
     $router->resource('/menu', MenuController::class);
     $router->post('/menu/addMenu', 'MenuController@addMenu')->name('admin.menu');
     $router->resource('/menulist', MenulistController::class);

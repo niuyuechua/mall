@@ -88,7 +88,6 @@ class NewsController extends Controller
     }
     //群发消息
     public function sendMessage(){
-        echo 111;die;
         $client=new Client();
         $openid=$_GET['openid'];
         $text=$_GET['text'];
@@ -106,7 +105,9 @@ class NewsController extends Controller
         $response=$client->request('POST',$url,[
             'body'=>$str
         ]);
-        dump($response);
+        $json =  $response->getBody();
+        $arr_res=json_decode($json,true);
+        dump($arr_res);
     }
 
     /**
