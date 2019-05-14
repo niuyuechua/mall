@@ -107,7 +107,7 @@ class NewsController extends Controller
         ]);
         $json =  $response->getBody();
         $arr_res=json_decode($json,true);
-        dump($arr_res);
+        //dump($arr_res);
         if($arr_res['errcode']==0){
             echo 'success';
         }else{

@@ -21,7 +21,7 @@
     @endforeach
 </table> <br>
 <p>请输入要发送的内容:<input type="text" id="text"></p>
-<button id="btn">发送</button>
+<button id="btn">发送</button>    <span class="color:red" id="message"></span>
 </body>
 </html>
 <script type="text/javascript" src="/js/jquery/jquery-1.12.4.min.js"></script>
@@ -64,8 +64,10 @@
             success:function(res){
                 if(res=='success'){
                     alert("群发成功");
+                    $("#message").html("群发成功");
                 }else{
                     alert("群发失败");
+                    $("#message").html("群发失败");
                 }
             }
         })
