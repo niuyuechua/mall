@@ -140,7 +140,7 @@ class NewsController extends Controller
             echo '群发失败';
         }
     }
-    //方式模板消息（测试）
+    //发送模板消息（测试）
     public function test2(){
         $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".getAccessToken();
         $post_data='{
