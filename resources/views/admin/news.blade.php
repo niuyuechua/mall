@@ -20,8 +20,11 @@
         </tr>
     @endforeach
 </table> <br>
-<p>请输入要发送的内容:<input type="text" id="text"></p>
-<button id="btn">发送</button>
+<div class="form-group">
+    <label for="exampleInputEmail1">请输入要发送的内容:</label>
+    <input type="text" id="text">
+</div>
+<button class="btn btn-primary" id="btn">发送</button>
 </body>
 </html>
 <script type="text/javascript" src="/js/jquery/jquery-1.12.4.min.js"></script>

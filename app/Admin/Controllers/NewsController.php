@@ -114,7 +114,27 @@ class NewsController extends Controller
             echo 'error';
         }
     }
-
+    //根据标签进行群发（测试）
+    public function test(){
+        $url="https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=".getAccessToken();
+        $arr=[
+            "filter"=>[
+            "is_to_all"=>true,
+           ],
+           "text"=>[
+                    "content"=>"卫龙辣条真好吃"
+           ],
+            "msgtype"=>"text"
+        ];
+        $json_str=json_encode($arr,JSON_UNESCAPED_UNICODE);
+        $client=new Client();
+        $res=$client->request('POST',$url,[
+            'body'=>$json_str
+        ]);
+        $json_res=$res->getBody();
+        $arr_res=json_decode($json_res,true);
+        dump($arr_res);
+    }
     /**
      * Make a show builder.
      *

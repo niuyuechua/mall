@@ -24,6 +24,7 @@ Route::group([
     $router->post('/menu/addMenu', 'MenuController@addMenu')->name('admin.menu');
     $router->resource('/menulist', MenulistController::class);
     Route::get('createMenu','MenulistController@createMenu');
+    Route::get('/test','NewsController@test');
 });
 //Route::get('/material','Admin\MaterialController@grid');
 //Route::any('/material/addImg','Admin\MaterialController@addImg');
