@@ -128,6 +128,7 @@ class MaterialController extends Controller
 
         //guzzle上传临时素材
         $client = new Client();
+        $response='';
         if($material_type==2 && $type=='video'){
             $response = $client->request('post',$url,[
                 'multipart' => [
@@ -138,15 +139,16 @@ class MaterialController extends Controller
                     ]
                 ]
             ]);
-        }
-        $response = $client->request('post',$url,[
-            'multipart' => [
-                [
-                    'name' => 'filename',
-                    'contents' => fopen($res,'r'),
+        }else{
+            $response = $client->request('post',$url,[
+                'multipart' => [
+                    [
+                        'name' => 'filename',
+                        'contents' => fopen($res,'r'),
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+        }
         $json =  $response->getBody();
         $arr=json_decode($json,true);
         //dump($arr);die;

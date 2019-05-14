@@ -90,9 +90,17 @@ class ListController extends Controller
         }
 
         $grid->id('Id');
-        $grid->type('Type');
+        $grid->media_name('媒体文件名称');
         $grid->media_id('Media id');
-        $grid->img_url('Img url')->image('http://'.$server_name);    //lavarel后台根据此域名对应的文件夹去找图片
+        $grid->url('Url')->image('http://'.$server_name);    //lavarel后台根据此域名对应的文件夹去找图片
+        $grid->type('媒体文件类型');
+        $grid->material_type('素材类型')->display(function($material_type){
+            if($material_type==1){
+                return "临时素材";
+            }else{
+                return "永久素材";
+            }
+        });
         $grid->created_at('上传时间')->display(function($created_at){
             return date('Y-m-d H:i',$created_at);
         });
