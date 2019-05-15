@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\ActModel;
 use App\LoveModel;
+use App\ChannelModel;
 
 class WxController extends Controller
 {
@@ -103,6 +104,8 @@ class WxController extends Controller
                         'event_key'=>$event_key
                     ];
                     $res = TmpUserModel::insert($data);
+                    //根据$event_key（渠道标识）修改该渠道的关注人数
+
                     $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
                     foreach($goods as $k=>$v){
                         $img=$v['goods_img'];

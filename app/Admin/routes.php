@@ -26,6 +26,9 @@ Route::group([
     Route::get('createMenu','MenulistController@createMenu');
     Route::get('/test','NewsController@test');
     Route::get('/test2','NewsController@test2');
+    $router->resource('/channel', ChannelController::class);
+    $router->resource('/channellist', ChannellistController::class);
+    $router->post('/channel/addChannel', 'ChannelController@addChannel')->name('admin.channel');
 });
 //Route::get('/material','Admin\MaterialController@grid');
 //Route::any('/material/addImg','Admin\MaterialController@addImg');
