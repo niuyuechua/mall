@@ -103,10 +103,12 @@ class WxController extends Controller
                         'subscribe_time'=>$info->subscribe_time,
                         'event_key'=>$event_key
                     ];
-                    $res = TmpUserModel::insert($data);
+                    TmpUserModel::insert($data);
+
                     //根据$event_key（渠道标识）修改该渠道的关注人数
                     $num=ChannelModel::where(['channel_sign'=>$event_key])->first()->num;
                     ChannelModel::where(['channel_sign'=>$event_key])->update(['num'=>$num+1]);
+
                     $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
                     foreach($goods as $k=>$v){
                         $img=$v['goods_img'];
@@ -465,70 +467,70 @@ class WxController extends Controller
     }
 
     //创建菜单
-    public function createMent(){
-        $redirect_url=urlEncode("http://1809niuyuechyuang.comcto.com/wx/getUinfo");
-        $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-        //接口数据
-        $post_arr=[
-            'button' => [
-                [
-                    'type'=>'click',
-                    'name'=>'功能说明',
-                    'key'=>'function declaration',
-                ],
-                [   'name'=>'娱乐',
-                    'sub_button'=> [
-                        ['type'=>'view',
-                            'name'=>'QQ音乐',
-                            'url'=>'http://y.qq.com/',
-                        ],
-                        [
-                            'type'=>'view',
-                            'name'=>'王者荣耀官网',
-                            'url'=>'https://pvp.qq.com/',
-                        ],
-                    ],
-                ],
-                [   'name'=>'更多...',
-                    'sub_button'=> [
-                        ['type'=>'view',
-                        'name'=>'最新福利',
-                        'url'=>$url2,
-                        ],
-                        [
-                            'type'=>'view',
-                            'name'=>'签到',
-                            'url'=>$url2,
-                        ],
-                        [
-                            "name"=> "发送位置",
-                            "type"=> "location_select",
-                            "key"=>"location"
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $json_str=json_encode($post_arr, JSON_UNESCAPED_UNICODE);   //加参数二可处理含中文的数组
-        //dd($json_str);die;
-        $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->getAccessToken();
-        //请求接口
-        $client= new Client();
-        $responce=$client->request('POST',$url,[
-            'body'=>$json_str
-        ]);
-        //dd($responce);die;
-        //处理响应
-        //$res_str=$responce->getBody();
-        //dd($res_str);
-        //$arr=json_decode($res_str,true);
-        //dd($arr);
-//        if($arr['errcode']==0){
-//            echo "创建菜单成功";
-//        }else{
-//            echo '创建菜单失败';
-//        }
-    }
+//    public function createMent(){
+//        $redirect_url=urlEncode("http://1809niuyuechyuang.comcto.com/wx/getUinfo");
+//        $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+//        //接口数据
+//        $post_arr=[
+//            'button' => [
+//                [
+//                    'type'=>'click',
+//                    'name'=>'功能说明',
+//                    'key'=>'function declaration',
+//                ],
+//                [   'name'=>'娱乐',
+//                    'sub_button'=> [
+//                        ['type'=>'view',
+//                            'name'=>'QQ音乐',
+//                            'url'=>'http://y.qq.com/',
+//                        ],
+//                        [
+//                            'type'=>'view',
+//                            'name'=>'王者荣耀官网',
+//                            'url'=>'https://pvp.qq.com/',
+//                        ],
+//                    ],
+//                ],
+//                [   'name'=>'更多...',
+//                    'sub_button'=> [
+//                        ['type'=>'view',
+//                        'name'=>'最新福利',
+//                        'url'=>$url2,
+//                        ],
+//                        [
+//                            'type'=>'view',
+//                            'name'=>'签到',
+//                            'url'=>$url2,
+//                        ],
+//                        [
+//                            "name"=> "发送位置",
+//                            "type"=> "location_select",
+//                            "key"=>"location"
+//                        ],
+//                    ],
+//                ],
+//            ],
+//        ];
+//        $json_str=json_encode($post_arr, JSON_UNESCAPED_UNICODE);   //加参数二可处理含中文的数组
+//        //dd($json_str);die;
+//        $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->getAccessToken();
+//        //请求接口
+//        $client= new Client();
+//        $responce=$client->request('POST',$url,[
+//            'body'=>$json_str
+//        ]);
+//        //dd($responce);die;
+//        //处理响应
+//        //$res_str=$responce->getBody();
+//        //dd($res_str);
+//        //$arr=json_decode($res_str,true);
+//        //dd($arr);
+////        if($arr['errcode']==0){
+////            echo "创建菜单成功";
+////        }else{
+////            echo '创建菜单失败';
+////        }
+//    }
 
     //微信网页授权（手机点击）
     public function authorization(){
