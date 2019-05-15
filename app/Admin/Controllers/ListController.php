@@ -93,17 +93,16 @@ class ListController extends Controller
         $grid->media_id('Media id');
         $grid->url('Url')->display(function($url){
             $ext=substr($url,-3);
-            $server_name=$_SERVER['SERVER_NAME'];
             if($ext=='mp3'){
-                return '<audio controls autoplay loop>
-                            <source src="'.$server_name.'/'.$url.'">                
+                return '<audio controls autoplay>
+                            <source src="/'.$url.'">                
                         </audio>';
             }elseif($ext=='mp4'){
-                return '<video controls autoplay loop>
-                             <source src="'.$server_name.'/'.$url.'">
+                return '<video controls autoplay  width=450;height=150>
+                             <source src="/'.$url.'">
                         </video>';
             }elseif($ext=='jpg' || $ext=='PNG'){
-                return '<img src="'.$server_name.'/'.$url.'">';
+                return '<img src="/'.$url.'" width=200>';
             }
         });
         //$grid->url('Url')->image('http://'.$server_name);    //lavarel后台根据此域名对应的文件夹去找图片
