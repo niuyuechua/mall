@@ -94,11 +94,11 @@ class ListController extends Controller
         $grid->url('Url')->display(function($url){
             $ext=substr($url,-3);
             if($ext=='mp3'){
-                return '<audio controls autoplay>
+                return '<audio controls preload>
                             <source src="/'.$url.'">                
                         </audio>';
             }elseif($ext=='mp4'){
-                return '<video controls autoplay  width=450;height=150>
+                return '<video controls preload width=450;height=150>
                              <source src="/'.$url.'">
                         </video>';
             }elseif($ext=='jpg' || $ext=='PNG'){
