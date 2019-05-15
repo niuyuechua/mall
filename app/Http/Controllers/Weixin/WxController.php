@@ -382,7 +382,7 @@ class WxController extends Controller
         //echo $goods_id;die;
         $ticket=$this->goodsTicket($goods_id);
         //$code_url="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=".$ticket."";
-        $code_url="http://1809a_weixin.com/wx/goodsDetail?goods_id=".$goods_id;
+        $code_url="http://1809a_weixin.com/wx/goodsDetail?ticket=".$ticket;
         $goods=GoodsModel::where(['goods_id'=>$goods_id])->first()->toArray();
         $js_config=$this->getConfig();
         $data=[
@@ -583,7 +583,7 @@ class WxController extends Controller
         $json =  $response->getBody();
         //dump($json);
         $arr2=json_decode($json,true);
-        dump($arr2);
+        //dump($arr2);
         $ticket=$arr2['ticket'];
         $code_url="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=".$ticket;
         //$code_url="http://1809a_weixin.com/wx/valid";

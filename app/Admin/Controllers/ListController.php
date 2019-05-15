@@ -92,6 +92,10 @@ class ListController extends Controller
         $grid->id('Id');
         $grid->media_name('媒体文件名称');
         $grid->media_id('Media id');
+//        $grid->url('Url')->display(function($url){
+//
+//            return '<img src="'.$url.'">';
+//        });
         $grid->url('Url')->image('http://'.$server_name);    //lavarel后台根据此域名对应的文件夹去找图片
         $grid->type('媒体文件类型');
         $grid->material_type('素材类型')->display(function($material_type){
