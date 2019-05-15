@@ -80,7 +80,6 @@ class ListController extends Controller
     protected function grid()
     {
         $grid = new Grid(new MaterialModel);
-        $server_name=$_SERVER['SERVER_NAME'];
         //删除media_id过期的图片（media_id有效期3天）
         $data=MaterialModel::get();
         foreach($data as $k=>$v){
@@ -92,11 +91,22 @@ class ListController extends Controller
         $grid->id('Id');
         $grid->media_name('媒体文件名称');
         $grid->media_id('Media id');
-//        $grid->url('Url')->display(function($url){
-//
-//            return '<img src="'.$url.'">';
-//        });
-        $grid->url('Url')->image('http://'.$server_name);    //lavarel后台根据此域名对应的文件夹去找图片
+        $grid->url('Url')->display(function($url){
+            $ext=substr($url,-3);
+            $server_name=$_SERVER['SERVER_NAME'];
+            if($ext=='mp3'){
+                return '<audio controls autoplay loop>
+                            <source src="'.$server_name.'/'.$url.'">                
+                        </audio>';
+            }elseif($ext=='mp4'){
+                return '<video controls autoplay loop>
+                             <source src="'.$server_name.'/'.$url.'">
+                        </video>';
+            }elseif($ext=='jpg' || $ext=='PNG'){
+                return '<img src="'.$server_name.'/'.$url.'">';
+            }
+        });
+        //$grid->url('Url')->image('http://'.$server_name);    //lavarel后台根据此域名对应的文件夹去找图片
         $grid->type('媒体文件类型');
         $grid->material_type('素材类型')->display(function($material_type){
             if($material_type==1){
