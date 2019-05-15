@@ -105,7 +105,8 @@ class WxController extends Controller
                     ];
                     $res = TmpUserModel::insert($data);
                     //根据$event_key（渠道标识）修改该渠道的关注人数
-
+                    $num=ChannelModel::where(['channel_sign'=>$event_key])->first()->num;
+                    ChannelModel::where(['channel_sign'=>$event_key])->update(['num'=>$num+1]);
                     $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
                     foreach($goods as $k=>$v){
                         $img=$v['goods_img'];
@@ -155,6 +156,11 @@ class WxController extends Controller
             }
             if($event=='unsubscribe'){
                 WxUserModel::where(['openid'=>$openid])->update(['status'=>0]);
+                TmpUserModel::where(['openid'=>$openid,'status'=>0])->update(['status'=>1]);
+                $channel_sign=TmpUserModel::where(['openid'=>$openid,'status'=>0])->first()->event_key;
+                //根据$event_key（渠道标识）修改该渠道的关注人数
+                $num=ChannelModel::where(['channel_sign'=>$channel_sign])->first()->num;
+                ChannelModel::where(['channel_sign'=>$channel_sign])->update(['num'=>$num-1]);
             }
             //点击菜单拉取消息
             $eventKey=$obj->EventKey;   //创建click菜单时设置的key值
