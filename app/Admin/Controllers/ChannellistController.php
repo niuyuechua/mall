@@ -87,9 +87,7 @@ class ChannellistController extends Controller
         $grid->channel_name('渠道名称');
         $grid->channel_sign('渠道标识');
         $grid->num('关注人数');
-        $grid->qrcode_url('渠道二维码')->image('http://'.$server_name,120,120)->modal('最新评论', function ($qrcode_url) {
-            return new Table(['ID'],"<img src='/.$qrcode_url.'>");
-        });
+        $grid->qrcode_url('渠道二维码')->view('content');
 
         return $grid;
     }
