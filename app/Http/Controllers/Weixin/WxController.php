@@ -156,11 +156,14 @@ class WxController extends Controller
             }
             if($event=='unsubscribe'){
                 WxUserModel::where(['openid'=>$openid])->update(['status'=>0]);
-                TmpUserModel::where(['openid'=>$openid])->delete();
+
+                //根据用户openid获取用户关注渠道（渠道标识）
                 $channel_sign=TmpUserModel::where(['openid'=>$openid])->first()->event_key;
                 //根据$event_key（渠道标识）修改该渠道的关注人数
                 $num=ChannelModel::where(['channel_sign'=>$channel_sign])->first()->num;
                 ChannelModel::where(['channel_sign'=>$channel_sign])->update(['num'=>$num-1]);
+                //删除取关用户
+                TmpUserModel::where(['openid'=>$openid])->delete();
             }
             //点击菜单拉取消息
             $eventKey=$obj->EventKey;   //创建click菜单时设置的key值
