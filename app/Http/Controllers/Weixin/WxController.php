@@ -611,7 +611,6 @@ class WxController extends Controller
             'body' => $str
         ]);
         $json =  $response->getBody();
-        //dump($json);
         $arr2=json_decode($json,true);
         //dump($arr2);
         $ticket=$arr2['ticket'];
