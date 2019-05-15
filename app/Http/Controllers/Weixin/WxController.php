@@ -156,8 +156,8 @@ class WxController extends Controller
             }
             if($event=='unsubscribe'){
                 WxUserModel::where(['openid'=>$openid])->update(['status'=>0]);
-                TmpUserModel::where(['openid'=>$openid,'status'=>0])->update(['status'=>1]);
-                $channel_sign=TmpUserModel::where(['openid'=>$openid,'status'=>0])->first()->event_key;
+                TmpUserModel::where(['openid'=>$openid])->del();
+                $channel_sign=TmpUserModel::where(['openid'=>$openid])->first()->event_key;
                 //根据$event_key（渠道标识）修改该渠道的关注人数
                 $num=ChannelModel::where(['channel_sign'=>$channel_sign])->first()->num;
                 ChannelModel::where(['channel_sign'=>$channel_sign])->update(['num'=>$num-1]);
