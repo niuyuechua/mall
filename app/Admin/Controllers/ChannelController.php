@@ -108,8 +108,10 @@ class ChannelController extends Controller
         $res=ChannelModel::insert($arr);
         if($res){
             echo '渠道添加成功';
+            header("Refresh:2;url=/admin/channellist");
         }else{
             echo '渠道添加失败';
+            header("Refresh:2;url=/admin/channel");
         }
     }
     public function getTicket($channel_sign){
