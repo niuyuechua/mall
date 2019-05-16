@@ -29,6 +29,8 @@ Route::group([
     $router->resource('/channel', ChannelController::class);
     $router->resource('/channellist', ChannellistController::class);
     $router->post('/channel/addChannel', 'ChannelController@addChannel')->name('admin.channel');
+    $router->resource('/paynum', PaynumController::class);
+    $router->resource('/sell', SellController::class);
 });
 //Route::get('/material','Admin\MaterialController@grid');
 //Route::any('/material/addImg','Admin\MaterialController@addImg');
