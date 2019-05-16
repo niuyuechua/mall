@@ -160,9 +160,9 @@ class WxController extends Controller
                 WxUserModel::where(['openid'=>$openid])->update(['status'=>0]);
 
                 //根据用户openid获取用户关注渠道（渠道标识）
-                $channel_sign=TmpUserModel::where(['openid'=>$openid])->first()->event_key;
+                $channel_sign=TmpUserModel::where(['openid'=>$openid])->value("event_key");
                 //根据$event_key（渠道标识）修改该渠道的关注人数
-                ChannelModel::where(['channel_sign'=>$channel_sign])->decrement('num');
+                $res=ChannelModel::where(['channel_sign'=>$channel_sign])->decrement('num');
                 //删除取关用户
                 TmpUserModel::where(['openid'=>$openid])->delete();
             }
