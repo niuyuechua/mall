@@ -10,6 +10,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 use GuzzleHttp\Client;
+use App\TagModel;
 
 class NewsController extends Controller
 {
@@ -81,8 +82,10 @@ class NewsController extends Controller
     protected function grid()
     {
         $user=WxUserModel::all();
+        $tag=TagModel::get()->toArray();
         $data=[
-            'user'=>$user
+            'user'=>$user,
+            'tag'=>$tag
         ];
         return view('admin.news',$data);
     }
@@ -109,20 +112,23 @@ class NewsController extends Controller
         $arr_res=json_decode($json,true);
         //dump($arr_res);
         if($arr_res['errcode']==0){
-            echo 'success';
+            echo '1';
         }else{
-            echo 'error';
+            echo '2';
         }
     }
     //根据标签进行群发（测试）
     public function test(){
+        $tag_id=$_GET['tag_id'];
+        $text=$_GET['text'];
         $url="https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=".getAccessToken();
         $arr=[
             "filter"=>[
-            "is_to_all"=>true,
+                "is_to_all"=>false,
+                "tag_id"=>$tag_id
            ],
            "text"=>[
-                    "content"=>"卫龙辣条真好吃 ~O(∩_∩)O~"
+                    "content"=>$text
            ],
             "msgtype"=>"text"
         ];
@@ -135,9 +141,9 @@ class NewsController extends Controller
         $arr_res=json_decode($json_res,true);
         //dump($arr_res);
         if($arr_res['errcode']==0){
-            echo '群发成功';
+            echo '1';
         }else{
-            echo '群发失败';
+            echo '2';
         }
     }
     //发送模板消息（测试）
