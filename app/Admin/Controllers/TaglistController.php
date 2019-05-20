@@ -188,4 +188,7 @@ class TaglistController extends Controller
 
         return $form;
     }
+    public function destroy(){
+        echo 1;
+    }
 }

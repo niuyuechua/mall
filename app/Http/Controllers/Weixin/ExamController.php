@@ -5,9 +5,15 @@ namespace App\Http\Controllers\Weixin;
 use App\WxUserModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\GoodsModel;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Redis;
 
 class ExamController extends Controller
 {
+    public function valid(){
+        echo $_GET['echostr'];
+    }
     public function wxEvent(){
         $content=file_get_contents("php://input");
         $time=date("Y-m-d H:i:s");
@@ -16,24 +22,65 @@ class ExamController extends Controller
         $obj=simplexml_load_string($content);
         $pb_id=$obj->ToUserName;
         $openid=$obj->FromUserName;
+        $msg_type=$obj->MsgType;
         $event=$obj->Event;
-        if($event=="subscribe"){
-            $userInfo=WxUserModel::where(['openid'=>$openid])->first();
-            if($userInfo){
-                echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+        if($msg_type=='event'){
+            if($event=="subscribe"){
+                $userInfo=WxUserModel::where(['openid'=>$openid])->first();
+                if($userInfo){
+                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
                             <Content><![CDATA['.'欢迎回来'.$userInfo['nickname'].']]></Content>
                        </xml>';
-            }else{
-                echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                }else{
+                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
                             <Content><![CDATA[请输入商品名称]]></Content>
                        </xml>';
+                }
             }
+        }elseif($msg_type=='text'){
+            $content=(string)$obj->Content;
+            //dump($content);die;
+            $key='goodsname';
+            $goods_name=Redis::get($key);
+            if(!$goods_name){
+                Redis::set($key,$content);
+                Redis::expire($key, 7200);
+                $goods_name=$content;
+            }
+            $data=GoodsModel::where(['goods_name'=>$goods_name])->first();
+            $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".$this->getAccessToken();
+            $post_data='{
+                           "touser":"'.$openid.'",
+                           "template_id":"t8BraLJvDlgNj1FikjLI9Ew2IJMk6fiplxOtjLP-qgg",
+                           "url":"https://pvp.qq.com/",          
+                           "data":{                                
+                                   "goods_name":{
+                                       "value":"'.$data->goods_name.'",
+                                       "color":"#173177"
+                                   },
+                                   "goods_price": {
+                                       "value":"'.$data->goods_price.'",
+                                       "color":"#173177"
+                                   },
+                                   "create_time": {
+                                       "value":"'.date('Y-m-d H:i',$data->create_time).'",
+                                       "color":"#173177"
+                                   }
+                           }
+                       }';
+            $client=new Client();
+            $res=$client->request('POST',$url,[
+                'body'=>$post_data
+            ]);
+//            $json_res=$res->getBody();
+//            $arr_res=json_decode($json_res,true);
+//            dump($arr_res);
         }
     }
     public function getAccessToken(){
@@ -50,6 +97,6 @@ class ExamController extends Controller
             Redis::expire($key, 7200);
             $data=$arr['access_token'];
         }
-        echo $data;
+        return $data;
     }
 }

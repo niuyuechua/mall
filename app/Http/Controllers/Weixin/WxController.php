@@ -50,8 +50,8 @@ class WxController extends Controller
         //echo 'SUCCESS';
         $obj=simplexml_load_string($content);       //将xml数据转化成对象
         //dump($obj);die;
-        $kf_id = $obj->ToUserName;  //公众号ID
-        $openid=$obj->FromUserName; //用户ID
+        $kf_id = $obj->ToUserName;  //开发者微信号
+        $openid=$obj->FromUserName; //发送方OpenID
         $msg_type=$obj->MsgType;    //消息类型（包括事件）
         $event=$obj->Event;    //事件类型（消息类型为事件时，有此字段）
         //全部事件
