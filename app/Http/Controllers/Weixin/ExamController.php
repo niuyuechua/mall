@@ -46,7 +46,7 @@ class ExamController extends Controller
         }elseif($msg_type=='text'){
             $content=(string)$obj->Content;
             //dump($content);die;
-            $key='goodsname';
+            $key=$content;
             $goods_name=Redis::get($key);
             if(!$goods_name){
                 Redis::set($key,$content);
