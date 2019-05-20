@@ -119,10 +119,9 @@ class TaglistController extends Controller
         $json_res=$res->getBody();
         $arr_res=json_decode($json_res,true);
         //dump($arr_res);die;
+        $openid=[];
         if($arr_res['count']>0){
             $openid=$arr_res['data']['openid'];
-        }else{
-            $openid=[];
         }
 
 //        $user_id=[];

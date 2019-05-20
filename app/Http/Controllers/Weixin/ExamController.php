@@ -44,14 +44,31 @@ class ExamController extends Controller
                 }
             }
         }elseif($msg_type=='text'){
-            $content=(string)$obj->Content;
+            $content=trim((string)$obj->Content);
             //dump($content);die;
             $key=$content;
             $data=Redis::get($key);
-            if(!$data){
-                $data=GoodsModel::where(['goods_name'=>$content])->first()->toArray();
+            if($data){
+                $data=explode(',',$data);
+                $data=[
+                    'goods_name'=>$data[0],
+                    'goods_price'=>$data[1],
+                    'create_time'=>$data[2],
+                ];
+                //dump($data);
+            }else{
+                $data=GoodsModel::where(['goods_name'=>$content])->first();
                 if($data){
+                    $data=$data->toArray();
+                    $data=[
+                        'goods_name'=>$data['goods_name'],
+                        'goods_price'=>$data['goods_price'],
+                        'create_time'=>$data['create_time'],
+                    ];
+                    //dump($data);
+                    $data=implode(',',$data);
                     Redis::set($key,$data);
+                    Redis::expire($key, 7200);
                 }else{
                     echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
@@ -62,6 +79,7 @@ class ExamController extends Controller
                     die;
                 }
             }
+
             $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".$this->getAccessToken();
             $post_data='{
                            "touser":"'.$openid.'",
