@@ -78,7 +78,7 @@ class ExamController extends Controller
                     die;
                 }
             }
-            dump($data);
+            //dump($data);
             $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".$this->getAccessToken();
             $post_data='{
                            "touser":"'.$openid.'",
