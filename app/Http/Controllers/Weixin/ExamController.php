@@ -47,13 +47,21 @@ class ExamController extends Controller
             $content=(string)$obj->Content;
             //dump($content);die;
             $key=$content;
-            $goods_name=Redis::get($key);
-            if(!$goods_name){
-                Redis::set($key,$content);
-                Redis::expire($key, 7200);
-                $goods_name=$content;
+            $data=Redis::get($key);
+            if(!$data){
+                $data=GoodsModel::where(['goods_name'=>$content])->first()->toArray();
+                if($data){
+                    Redis::set($key,$data);
+                }else{
+                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
+                            <CreateTime>.time().</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[不存在该商品]]></Content>
+                       </xml>';
+                    die;
+                }
             }
-            $data=GoodsModel::where(['goods_name'=>$goods_name])->first()->toArray();
             $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".$this->getAccessToken();
             $post_data='{
                            "touser":"'.$openid.'",
