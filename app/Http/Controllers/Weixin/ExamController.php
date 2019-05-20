@@ -53,7 +53,7 @@ class ExamController extends Controller
                 Redis::expire($key, 7200);
                 $goods_name=$content;
             }
-            $data=GoodsModel::where(['goods_name'=>$goods_name])->first();
+            $data=GoodsModel::where(['goods_name'=>$goods_name])->first()->toArray();
             $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".$this->getAccessToken();
             $post_data='{
                            "touser":"'.$openid.'",
@@ -61,15 +61,15 @@ class ExamController extends Controller
                            "url":"https://pvp.qq.com/",          
                            "data":{                                
                                    "goods_name":{
-                                       "value":"'.$data->goods_name.'",
+                                       "value":"'.$data['goods_name'].'",
                                        "color":"#173177"
                                    },
                                    "goods_price": {
-                                       "value":"'.$data->goods_price.'",
+                                       "value":"'.$data['goods_price'].'",
                                        "color":"#173177"
                                    },
                                    "create_time": {
-                                       "value":"'.date('Y-m-d H:i',$data->create_time).'",
+                                       "value":"'.date('Y-m-d H:i',$data['create_time']).'",
                                        "color":"#173177"
                                    }
                            }
