@@ -66,8 +66,7 @@ class ExamController extends Controller
                         'create_time'=>$data['create_time'],
                     ];
                     //dump($data);
-                    $data=implode(',',$data);
-                    Redis::set($key,$data);
+                    Redis::set($key,implode(',',$data));
                     Redis::expire($key, 7200);
                 }else{
                     echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
@@ -79,7 +78,7 @@ class ExamController extends Controller
                     die;
                 }
             }
-
+            dump($data);
             $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".$this->getAccessToken();
             $post_data='{
                            "touser":"'.$openid.'",
