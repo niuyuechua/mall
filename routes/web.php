@@ -21,14 +21,14 @@ Route::get('/info',function(){
 
 //微信公众平台
 Route::get('wx/valid','Weixin\WxController@valid');
-//Route::post('wx/valid','Weixin\WxController@wxEvent');
-//Route::get('wx/getAccessToken','Weixin\WxController@getAccessToken');
+Route::post('wx/valid','Weixin\WxController@wxEvent');
+Route::get('wx/getAccessToken','Weixin\WxController@getAccessToken');
 Route::get('wx/test','Weixin\WxController@test');
 //Route::get('wx/valid','Weixin\LoveController@valid');       //表白墙
 //Route::post('wx/valid','Weixin\LoveController@wxEvent');        //表白墙
 //月考机试
-Route::post('wx/valid','Weixin\ExamController@wxEvent');
-Route::get('wx/getAccessToken','Weixin\ExamController@getAccessToken');
+//Route::post('wx/valid','Weixin\ExamController@wxEvent');
+//Route::get('wx/getAccessToken','Weixin\ExamController@getAccessToken');
 //图文消息详情
 Route::get('wx/goodsDetail','Weixin\WxController@goodsDetail');
 Route::get('wx/phoneDetail','Weixin\WxController@phoneDetail');
