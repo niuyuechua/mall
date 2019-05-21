@@ -467,7 +467,7 @@ class WxController extends Controller
 
     //创建菜单
 //    public function createMent(){
-//        $redirect_url=urlEncode("http://1809niuyuechyuang.comcto.com/wx/getUinfo");
+//        $redirect_url=urlEncode("http://www.nyc666666.top/wx/getUinfo");
 //        $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 //        //接口数据
 //        $post_arr=[
@@ -551,7 +551,7 @@ class WxController extends Controller
         $user=UserModel::where(['openid'=>$userInfo['openid']])->first();
         if($user){
             echo '欢迎回来 '.$user['nickname'].',正在跳转至福利页面';
-            header("refresh:3;url=http://1809niuyuechyuang/wx/goodsDetail?goods_id=60");
+            header("refresh:3;url=http://www.nyc666666.top/wx/goodsDetail?goods_id=60");
         }else{
             //用户信息入库
             $user=[
@@ -567,7 +567,7 @@ class WxController extends Controller
             $r=UserModel::insert($user);
             if($r){
                 echo '欢迎'.$userInfo['nickname'].',正在跳转至福利页面';
-                header("refresh:3;url=http://1809niuyuechyuang/wx/goodsDetail?goods_id=60");
+                header("refresh:3;url=http://www.nyc666666.top/wx/goodsDetail?goods_id=60");
             }else{
                 echo '授权失败,请稍后尝试';
             }

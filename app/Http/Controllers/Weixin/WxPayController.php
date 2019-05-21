@@ -159,7 +159,7 @@ class WxPayController extends Controller
             //验证签名
             $sign = true;
             if($sign){       //签名验证成功
-                //TODO 逻辑处理  订单状态更新
+                //TODO 逻辑处理  跳转页面、订单状态更新
             }else{
                 //TODO 验签失败
                 echo '验签失败，IP: '.$_SERVER['REMOTE_ADDR'];
