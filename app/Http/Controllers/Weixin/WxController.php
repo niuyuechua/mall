@@ -233,7 +233,7 @@ class WxController extends Controller
                 //$url="https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$this->getAccessToken()."&type=image";
                 foreach ($goods as $k => $v) {
                     $img = $v['goods_img'];
-                    $picurl = "http://1809niuyuechyuang.comcto.com/goodsimg/" . $img;
+                    $picurl = "http://www.nyc666666.top/goodsimg/" . $img;
                     $res = '<xml>
                           <ToUserName><![CDATA[' . $openid . ']]></ToUserName>
                           <FromUserName><![CDATA[' . $kf_id . ']]></FromUserName>
@@ -245,7 +245,7 @@ class WxController extends Controller
                               <Title><![CDATA[最新商品]]></Title>
                               <Description><![CDATA[啦啦啦]]></Description>
                               <PicUrl><![CDATA[' . $picurl . ']]></PicUrl>
-                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
+                              <Url><![CDATA[http://www.nyc666666.top/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
                             </item>
                           </Articles>
                         </xml>';
