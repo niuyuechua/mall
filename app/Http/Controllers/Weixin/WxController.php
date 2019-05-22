@@ -629,4 +629,33 @@ class WxController extends Controller
         $ticket=$arr2['ticket'];
         return $ticket;
     }
+
+
+    //根据标签进行群发（计划任务 定时群发）
+    public function plan(){
+        $text='早上好呀！ ~O(∩_∩)O~';
+        $url="https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=".getAccessToken();
+        $arr=[
+            "filter"=>[
+                "is_to_all"=>true
+            ],
+            "text"=>[
+                "content"=>$text
+            ],
+            "msgtype"=>"text"
+        ];
+        $json_str=json_encode($arr,JSON_UNESCAPED_UNICODE);
+        $client=new Client();
+        $res=$client->request('POST',$url,[
+            'body'=>$json_str
+        ]);
+        $json_res=$res->getBody();
+        $arr_res=json_decode($json_res,true);
+        //dump($arr_res);
+        if($arr_res['errcode']==0){
+            echo '1';
+        }else{
+            echo '2';
+        }
+    }
 }
