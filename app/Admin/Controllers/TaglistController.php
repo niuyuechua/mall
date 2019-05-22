@@ -11,7 +11,6 @@ use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 use App\WxUserModel;
 use GuzzleHttp\Client;
-use Tests\Models\Tag;
 
 class TaglistController extends Controller
 {
@@ -187,7 +186,18 @@ class TaglistController extends Controller
 
         return $form;
     }
-    public function destroy(){
-        echo 1;
+    public function destroy($id){
+        $res=TagModel::destroy($id);
+        $url="https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=".getAccessToken();
+        $post_data='{   "tag":{   "id" :'.$id.'} }';
+        $client=new Client();
+        $res=$client->request('POST',$url,[
+            'body'=>$post_data
+        ]);
+        $json_res=$res->getBody();
+        $arr_res=json_decode($json_res,true);
+        if($res&&$arr_res['errcode']==0){
+            echo '删除成功';
+        }
     }
 }
