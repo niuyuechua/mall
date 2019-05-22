@@ -53,7 +53,7 @@ use Illuminate\Support\Facades\Redis;
             $SERVER_NAME = $_SERVER['HTTP_HOST'];  //获取域名
             $REQUEST_URI = $_SERVER['REQUEST_URI']; //获取参数
             $redirect_url=urlEncode('http://'.$SERVER_NAME.$REQUEST_URI);
-            $code=$_GET['code'];
+            $code = request('code');
             if($code){
                 //2、微信授权回调
                 $url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=".env('WX_APP_ID')."&secret=".env('WX_APP_SEC')."&code=".$code."&grant_type=authorization_code";
