@@ -13,8 +13,9 @@ class LoginController extends Controller
     }
     public function bind(){
         $openid=session('openid');
-        dump($openid);die;
+        //dump($openid);die;
         if(empty($openid)){
+            echo 1;
             $redirect_url=urlEncode("http://www.nyc666666.top/login/getOpenid");
             $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect";
             header("location=$url2");
