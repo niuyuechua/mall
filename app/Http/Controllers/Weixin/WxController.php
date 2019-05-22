@@ -633,7 +633,7 @@ class WxController extends Controller
 
     //根据标签进行群发（计划任务 定时群发）
     public function plan(){
-        $text='早上好呀！ ~O(∩_∩)O~';
+        $text='早上好！ ~O(∩_∩)O~';
         $url="https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=".getAccessToken();
         $arr=[
             "filter"=>[
