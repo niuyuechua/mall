@@ -51,3 +51,8 @@ Route::get('wx/getUinfo','Weixin\WxController@getUinfo');
 //生成带参数的二维码
 Route::get('wx/getTicket','Weixin\WxController@getTicket');
 Route::get('wx/code','Weixin\WxController@code');
+//自定义后台登录
+Route::get('/login','Weixin\LoginController@index');
+Route::get('login/getOpenid','Weixin\LoginController@getOpenid');
+Route::get('login/bind','Weixin\LoginController@bind');
+Route::get('login/doBind','Weixin\LoginController@doBind');
