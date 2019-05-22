@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Weixin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\BindModel;
+use GuzzleHttp\Client;
 
 class LoginController extends Controller
 {
@@ -42,5 +43,42 @@ class LoginController extends Controller
         }else{
             echo '绑定失败';
         }
+    }
+    public function sendCode(){
+        $name=$_GET['name'];
+        $pwd=$_GET['pwd'];
+        $openid=BindModel::where(['name'=>$name,'pwd'=>$pwd])->value('openid');
+        $code=rand(1000,9999);
+        $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".getAccessToken();
+        $post_data='{
+           "touser":"oSBfr5rWb5tS3_TEj3y2vwJNWexo",
+           "template_id":"mBabFJcP_iWKGZ9TqdI4rbpe8r1z3ADG7K5lGAm_kQQ",
+           "url":"https://pvp.qq.com/",          
+           "data":{
+                "code": {
+                    "value":"'.$code.'",
+                       "color":"#173177"
+                   },
+                   "date":{
+                    "value":"'.date('Y-m-d H:i',time()).'",
+                       "color":"#173177"
+                   }
+           }
+        }';
+        $client=new Client();
+        $res=$client->request('POST',$url,[
+            'body'=>$post_data
+        ]);
+        $json_res=$res->getBody();
+        $arr_res=json_decode($json_res,true);
+        //dump($arr_res);
+        if($arr_res['errcode']==0){
+            echo 1;
+        }else{
+            echo 2;
+        }
+    }
+    public function doLogin(){
+
     }
 }

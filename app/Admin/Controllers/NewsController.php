@@ -170,7 +170,7 @@ class NewsController extends Controller
         ]);
         $json_res=$res->getBody();
         $arr_res=json_decode($json_res,true);
-        dump($arr_res);
+        //dump($arr_res);
         if($arr_res['errcode']==0){
             echo '模板消息发送成功';
         }else{

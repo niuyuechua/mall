@@ -59,14 +59,14 @@ img{
 
 <body class="b">
 <div class="lg">
-<form action="#" method="POST">
+<form action="login/doLogin" method="POST">
     <div class="lg_main">
         <div class="lg_m_1">
         <input name="username" placeholder="用户名" class="ur" />
         <input name="password" type="password" placeholder="密码" class="pw" /> <br><br>
         <div style="padding-left:30px">
             <img src="/images/login/untitled.png" width="150">
-            <input type="text" placeholder="请输入验证码"> <button class="code">获取验证码</button>
+            <input type="text" placeholder="请输入验证码"> <input type="button" value="获取验证码" class="code" />
         </div>
         </div>
     </div>
@@ -84,15 +84,15 @@ img{
         var name=$(".ur").val();
         var pwd=$(".pw").val();
         $.ajax({
-            url : 'login/login',
+            url : '/login/sendCode',
             data:{name,pwd},
             type:'get',
             dataType:'json',
             success:function(res){
                 if(res==1){
-                    alert("分配成功");
+                    alert("验证码发送成功");
                 }else{
-                    alert("分配失败");
+                    alert("验证码发送失败");
                 }
             }
         })

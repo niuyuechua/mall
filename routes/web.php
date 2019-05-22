@@ -56,3 +56,5 @@ Route::get('/login','Weixin\LoginController@index');
 Route::get('login/getOpenid','Weixin\LoginController@getOpenid');
 Route::get('login/bind','Weixin\LoginController@bind');
 Route::get('login/doBind','Weixin\LoginController@doBind');
+Route::get('login/sendCode','Weixin\LoginController@sendCode');
+Route::post('login/doLogin','Weixin\LoginController@doLogin');
