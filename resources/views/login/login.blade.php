@@ -11,14 +11,14 @@
 
 body{
 	font-family:Arial, Helvetica, sans-serif;
-	background:url(/login/grass.jpg);
+	background:url(/images/login/grass.jpg);
 	font-size:13px;
     
 	}
 img{
 	border:0;
 	}
-.lg{width:468px; height:468px; margin:100px auto; background:url(/login/login_bg.png) no-repeat;}
+.lg{width:468px; height:468px; margin:100px auto; background:url(/images/login/login_bg.png) no-repeat;}
 .lg_top{ height:200px; width:468px;}
 .lg_main{width:400px; height:180px; margin:0 25px;}
 .lg_m_1{
@@ -32,7 +32,7 @@ img{
 	color:#666;
 	width:236px;
 	margin:4px 28px;
-	background:url(/login/user.png) no-repeat;
+	background:url(/images/login/user.png) no-repeat;
 	padding-left:10px;
 	font-size:16pt;
 	font-family:Arial, Helvetica, sans-serif;
@@ -43,12 +43,12 @@ img{
 	color:#666;
 	width:236px;
 	margin:4px 28px;
-	background:url(/login/password.png) no-repeat;
+	background:url(/images/login/password.png) no-repeat;
 	padding-left:10px;
 	font-size:16pt;
 	font-family:Arial, Helvetica, sans-serif;
 }
-.bn{width:330px; height:72px; background:url(/login/enter.png) no-repeat; border:0; display:block; font-size:18px; color:#FFF; font-family:Arial, Helvetica, sans-serif; font-weight:bolder;}
+.bn{width:330px; height:72px; background:url(/images/login/enter.png) no-repeat; border:0; display:block; font-size:18px; color:#FFF; font-family:Arial, Helvetica, sans-serif; font-weight:bolder;}
 .lg_foot{
 	height:80px;
 	width:330px;
