@@ -28,6 +28,7 @@ class LoginController extends Controller
         $url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=".env('WX_APP_ID')."&secret=".env('WX_APP_SEC')."&code=".$code."&grant_type=authorization_code";
         $res=json_decode(file_get_contents($url),true);
         $openid=$res['openid'];
+        dump($openid);die;
         session(['openid'=>$openid]);
         redirect('login/bind');
     }
