@@ -49,11 +49,14 @@ class LoginController extends Controller
         $name=$_GET['name'];
         $pwd=$_GET['pwd'];
         $openid=BindModel::where(['name'=>$name,'pwd'=>$pwd])->value('openid');
+        if(empty($openid)){
+            echo 0;die;
+        }
         $code=rand(1000,9999);
         setcookie($code,$code,time()+300);
         $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".getAccessToken();
         $post_data='{
-           "touser":"oSBfr5rWb5tS3_TEj3y2vwJNWexo",
+           "touser":"'.$openid.'",
            "template_id":"mBabFJcP_iWKGZ9TqdI4rbpe8r1z3ADG7K5lGAm_kQQ",
            "url":"https://pvp.qq.com/",          
            "data":{

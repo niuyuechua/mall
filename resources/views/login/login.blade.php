@@ -81,6 +81,28 @@ img{
 </html>
 <script type="text/javascript" src="/js/jquery/jquery-3.2.1.min.js"></script>
 <script>
+    $(".code").on('click',function(){
+        //ajax请求，发送验证码
+        var name=$(".ur").val();
+        var pwd=$(".pw").val();
+
+        $.ajax({
+            url : '/login/sendCode',
+            data:{name,pwd},
+            type:'get',
+            dataType:'json',
+            success:function(res){
+                if(res==0){
+                    alert("用户名或密码错误");
+                }else if(res==1){
+                    alert("验证码发送成功");
+                }else{
+                    alert("验证码发送失败");die;
+                }
+            }
+        })
+    })
+
     //点击获取后倒计时
     var clock = '';
     var nums = 60;
@@ -104,24 +126,4 @@ img{
             nums = 10; //重置时间
         }
     }
-
-    $(".code").on('click',function(){
-
-        //ajax请求，发送验证码
-        var name=$(".ur").val();
-        var pwd=$(".pw").val();
-        $.ajax({
-            url : '/login/sendCode',
-            data:{name,pwd},
-            type:'get',
-            dataType:'json',
-            success:function(res){
-                if(res==1){
-                    alert("验证码发送成功");
-                }else{
-                    alert("验证码发送失败");
-                }
-            }
-        })
-    })
 </script>
