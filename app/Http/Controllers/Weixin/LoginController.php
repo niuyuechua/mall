@@ -12,7 +12,7 @@ class LoginController extends Controller
         getOpenid();        //微信网页授权 获取openid（封装=下面两个方法）
         return view('login.login');
     }
-//    public function bind(){
+    public function bind(){
 //        $openid=session('openid');
 //        //dump($openid);die;
 //        if(empty($openid)){
@@ -21,8 +21,8 @@ class LoginController extends Controller
 //            $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 //            header("location:$url2");
 //        }
-//        return view('login.bind');
-//    }
+        return view('login.bind');
+    }
 //    //2、微信授权回调
 //    public function getOpenid(){
 //        $code=$_GET['code'];
