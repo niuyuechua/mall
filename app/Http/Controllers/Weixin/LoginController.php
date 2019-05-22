@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\BindModel;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cookie;
 
 class LoginController extends Controller
 {
@@ -49,6 +50,7 @@ class LoginController extends Controller
         $pwd=$_GET['pwd'];
         $openid=BindModel::where(['name'=>$name,'pwd'=>$pwd])->value('openid');
         $code=rand(1000,9999);
+        setcookie($code,$code,time()+300);
         $url="https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=".getAccessToken();
         $post_data='{
            "touser":"oSBfr5rWb5tS3_TEj3y2vwJNWexo",
@@ -79,6 +81,24 @@ class LoginController extends Controller
         }
     }
     public function doLogin(){
-
+        $data=request()->all();
+        $user=BindModel::where(['name'=>$data['name']])->first();
+        if($user){
+            if($data['pwd']!=$user->pwd){
+                echo '用户名或密码错误，请重新登录';
+                header("refresh:3;url=/login");die;
+            }
+        }else{
+            echo '用户名或密码错误，请重新登录';
+            header("refresh:3;url=/login");die;
+        }
+        $code=$_COOKIE;
+        //dump($code);
+        if(!in_array($data['code'],$code)){
+            echo '验证码错误或已过期，请重新获取';
+            header("refresh:3;url=/login");die;
+        }
+        echo '登录成功，正在跳转至后台首页';
+        header("refresh:2;url=/admin");
     }
 }

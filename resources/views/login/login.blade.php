@@ -59,20 +59,21 @@ img{
 
 <body class="b">
 <div class="lg">
-<form action="login/doLogin" method="POST">
+<form action="/login/doLogin" method="POST">
     <div class="lg_main">
         <div class="lg_m_1">
-        <input name="username" placeholder="用户名" class="ur" />
-        <input name="password" type="password" placeholder="密码" class="pw" /> <br><br>
+        <input name="name" placeholder="用户名" class="ur" />
+        <input name="pwd" type="password" placeholder="密码" class="pw" /> <br><br>
         <div style="padding-left:30px">
             <img src="/login_images/login/untitled.jpg" width="150">
-            <input type="text" placeholder="请输入验证码"> <input type="button" value="获取验证码" class="code" />
+            <input type="text" name="code" placeholder="请输入验证码"> <input type="button" value="获取验证码" onclick="sendCode(this)" class="code" />
         </div>
         </div>
     </div>
     <br><br><br><br><br><br><br><br><br><br><br><br>
     <div class="lg_foot">
     <input type="submit" value="Login In" class="bn" /></div>
+    {{csrf_field()}}
 </form>
 </div>
 
@@ -80,7 +81,33 @@ img{
 </html>
 <script type="text/javascript" src="/js/jquery/jquery-3.2.1.min.js"></script>
 <script>
+    //点击获取后倒计时
+    var clock = '';
+    var nums = 60;
+    var btn;
+    function sendCode(thisBtn)
+    {
+        btn = thisBtn;
+        btn.disabled = true; //将按钮置为不可点击
+        btn.value = nums+'秒后可重新获取';
+        clock = setInterval(doLoop, 1000); //一秒执行一次
+    }
+    function doLoop()
+    {
+        nums--;
+        if(nums > 0){
+            btn.value = nums+'秒后可重新获取';
+        }else{
+            clearInterval(clock); //清除js定时器
+            btn.disabled = false;
+            btn.value = '获取验证码';
+            nums = 10; //重置时间
+        }
+    }
+
     $(".code").on('click',function(){
+
+        //ajax请求，发送验证码
         var name=$(".ur").val();
         var pwd=$(".pw").val();
         $.ajax({
