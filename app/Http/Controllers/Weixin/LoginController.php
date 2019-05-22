@@ -29,7 +29,7 @@ class LoginController extends Controller
         $res=json_decode(file_get_contents($url),true);
         $openid=$res['openid'];
         session(['openid'=>$openid]);
-        redirect('login/bind');
+        return redirect('login/bind');
     }
     public function doBind(){
         $data=request()->all();
