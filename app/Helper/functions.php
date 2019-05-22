@@ -48,7 +48,7 @@ use Illuminate\Support\Facades\Redis;
     function getOpenid(){
         $openid=session('openid');
         if($openid){
-            return $openid;
+            return $openid;     //（不需要）
         }else{
             $SERVER_NAME = $_SERVER['HTTP_HOST'];  //获取域名
             $REQUEST_URI = $_SERVER['REQUEST_URI']; //获取参数
@@ -60,7 +60,7 @@ use Illuminate\Support\Facades\Redis;
                 $res=json_decode(file_get_contents($url),true);
                 $openid=$res['openid'];
                 session(['openid'=>$openid]);
-                return $openid;
+                return $openid;     //（不需要）
             }else{
                 //1、跳转到微信服务器 授权
                 $url2="https://open.weixin.qq.com/connect/oauth2/authorize?appid=".env('WX_APP_ID')."&redirect_uri=".$redirect_url."&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";

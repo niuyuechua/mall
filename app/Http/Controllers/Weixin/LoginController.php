@@ -9,10 +9,10 @@ use App\BindModel;
 class LoginController extends Controller
 {
     public function index(){
-        getOpenid();        //微信网页授权 获取openid（封装=下面两个方法）
         return view('login.login');
     }
     public function bind(){
+        getOpenid();        //微信网页授权 获取openid（封装=下面两个方法）
 //        $openid=session('openid');
 //        //dump($openid);die;
 //        if(empty($openid)){
