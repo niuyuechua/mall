@@ -8,7 +8,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="login/doBind">
+    <form action="/login/doBind">
         <div class="form-group">
             <label for="exampleInputEmail1">用户名</label>
             <input type="text" name="name">
