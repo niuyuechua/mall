@@ -19,7 +19,7 @@
 </html>
 <script type="text/javascript" src="/js/jquery/jquery-3.2.1.min.js"></script>
 <script>
-    var lunxun =setInterval("findOpenid()",3000);
+    var lunxun =setInterval("findOpenid()",5000);
     function findOpenid(){
         var id="{{$random}}";
         $.ajax({
@@ -31,7 +31,7 @@
                 $(".hint").text(res.msg);
                 clearInterval(lunxun);
                 if(res.code==1){
-                    header('refresh:3,url=/admin');
+                    location.href='/admin';
                 }
             }
         })
