@@ -651,11 +651,6 @@ class WxController extends Controller
         ]);
         $json_res=$res->getBody();
         $arr_res=json_decode($json_res,true);
-        //dump($arr_res);
-        if($arr_res['errcode']==0){
-            echo '1';
-        }else{
-            echo '2';
-        }
+        dump($arr_res);
     }
 }
