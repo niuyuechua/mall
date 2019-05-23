@@ -11,7 +11,7 @@
 
     <div style="text-align:center;padding-top:10%;">
         <h2>微信扫描下方二维码</h2>
-        <h3 class="hint" style="color:red"></h3>
+        <h3 class="hint" style="color:green"></h3>
         <img src="http://qr.liantu.com/api.php?bg=f3f3f3&fg=ff0000&gc=222222&el=l&w=300&m=10&text={{$text}}"/> <br>
         <a href="/login">账号登录</a>
     </div>
@@ -28,10 +28,12 @@
             type:'get',
             dataType:'json',
             success:function(res){
+                $(".hint").text(res.msg);
                 if(res.code==1){
                     location.href='/admin';
+                }else if(res.code==2){
+                    $(".hint").style.color="red";
                 }
-                $(".hint").text(res.msg);
                 clearInterval(lunxun);
             }
         })
