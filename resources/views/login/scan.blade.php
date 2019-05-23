@@ -32,7 +32,7 @@
                 if(res.code==1){
                     location.href='/admin';
                 }else if(res.code==2){
-                    $(".hint").style.color="red";
+                    $(".hint").style('color','red');
                 }
                 clearInterval(lunxun);
             }
