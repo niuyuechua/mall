@@ -189,6 +189,12 @@ class TaglistController extends Controller
     }
     //删除标签（本地数据库+线上删除接口）
     public function destroy($id){
+          //获取公众号已创建的标签
+//        $url="https://api.weixin.qq.com/cgi-bin/tags/get?access_token=".getAccessToken();
+//        $json_res=file_get_contents($url);
+//        $arr_res=json_decode($json_res,true);
+//        dump($arr_res);die;
+
         $tag_id=TagModel::where(['t_id'=>$id])->value('tag_id');
         //dump($tag_id);die;
         $res=TagModel::destroy($id);
