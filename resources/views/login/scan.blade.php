@@ -29,8 +29,8 @@
             dataType:'json',
             success:function(res){
                 if(res.code==1){
-                    $(".hint").style.color='green';
                     location.href='/admin';
+                    $(".hint").style.color='green';
                 }
                 $(".hint").text(res.msg);
                 clearInterval(lunxun);
