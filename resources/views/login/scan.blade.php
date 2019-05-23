@@ -30,7 +30,6 @@
             success:function(res){
                 if(res.code==1){
                     location.href='/admin';
-                    $(".hint").style.color='green';
                 }
                 $(".hint").text(res.msg);
                 clearInterval(lunxun);
