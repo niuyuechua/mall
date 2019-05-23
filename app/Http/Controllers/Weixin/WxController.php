@@ -637,7 +637,8 @@ class WxController extends Controller
         $url="https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=".getAccessToken();
         $arr=[
             "filter"=>[
-                "is_to_all"=>true
+                "is_to_all"=>false,
+                "tag_id"=>102
             ],
             "text"=>[
                 "content"=>$text
