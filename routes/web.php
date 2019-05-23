@@ -58,5 +58,7 @@ Route::get('login/bind','Weixin\LoginController@bind');
 Route::get('login/doBind','Weixin\LoginController@doBind');
 Route::get('login/sendCode','Weixin\LoginController@sendCode');
 Route::post('login/doLogin','Weixin\LoginController@doLogin');
+Route::get('login/scan','Weixin\LoginController@scan');
+Route::get('login/doScan','Weixin\LoginController@doScan');
 //计划任务 定时群发
 Route::get('wx/plan','Weixin\WxController@plan');

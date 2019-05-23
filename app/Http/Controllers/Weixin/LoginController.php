@@ -13,6 +13,17 @@ class LoginController extends Controller
     public function index(){
         return view('login.login');
     }
+    public function scan(){
+        $random=time().rand(1000,9999);
+        $text='http://www.nyc666666.top/login/doScan?id='.$random;
+        return view('login.scan',compact('text'));
+    }
+    public function doScan(){
+        $random=$_GET['id'];
+        $openid=getOpenid();
+        session([$random=>$openid]);
+        dump(session($random));
+    }
     public function bind(){
         getOpenid();        //微信网页授权 获取openid（封装=下面两个方法）
 //        $openid=session('openid');

@@ -72,6 +72,7 @@ img{
     </div>
     <br><br><br><br><br><br><br><br><br><br><br><br>
     <div class="lg_foot">
+    <a href="/login/scan">扫码登录</a>
     <input type="submit" value="Login In" class="bn" /></div>
     {{csrf_field()}}
 </form>
