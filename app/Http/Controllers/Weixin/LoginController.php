@@ -6,23 +6,39 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\BindModel;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Cache;
 
 class LoginController extends Controller
 {
     public function index(){
         return view('login.login');
     }
+    //PC微信扫码页面
     public function scan(){
         $random=time().rand(1000,9999);
         $text='http://www.nyc666666.top/login/doScan?id='.$random;
-        return view('login.scan',compact('text'));
+        return view('login.scan',compact('text','random'));
     }
+    //手机微信扫码
     public function doScan(){
-        $random=$_GET['id'];
+        $id=$_GET['id'];
         $openid=getOpenid();
-        session([$random=>$openid]);
-        dump(session($random));
+        Cache::put($id,$openid,180);
+        return '扫码授权成功，正在登录...';
+    }
+    //检测是否扫描
+    public function checkScan(){
+        $id=request()->id;
+        $openid=Cache::get($id);
+        if($openid){
+            //已扫描
+            $data=BindModel::where(['openid'=>$openid])->first();
+            if($data){
+                return ['code'=>1,'msg'=>'登录成功'];
+            }else{
+                return ['code'=>2,'msg'=>'请先绑定微信账号'];
+            }
+        }
     }
     public function bind(){
         getOpenid();        //微信网页授权 获取openid（封装=下面两个方法）

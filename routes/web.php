@@ -60,5 +60,6 @@ Route::get('login/sendCode','Weixin\LoginController@sendCode');
 Route::post('login/doLogin','Weixin\LoginController@doLogin');
 Route::get('login/scan','Weixin\LoginController@scan');
 Route::get('login/doScan','Weixin\LoginController@doScan');
+Route::get('login/checkScan','Weixin\LoginController@checkScan');
 //计划任务 定时群发
 Route::get('wx/plan','Weixin\WxController@plan');

@@ -56,28 +56,26 @@ img{
 }
 </style>
 </head>
-
 <body class="b">
-<div class="lg">
-<form action="/login/doLogin" method="POST">
-    <div class="lg_main">
-        <div class="lg_m_1">
-        <input name="name" placeholder="用户名" class="ur" />
-        <input name="pwd" type="password" placeholder="密码" class="pw" /> <br><br>
-        <div style="padding-left:30px">
-            <img src="/login_images/login/untitled.jpg" width="150">
-            <input type="text" name="code" placeholder="请输入验证码"> <input type="button" value="获取验证码" onclick="sendCode(this)" class="code" />
+    <div class="lg">
+    <form action="/login/doLogin" method="POST">
+        <div class="lg_main">
+            <div class="lg_m_1">
+            <input name="name" placeholder="用户名" class="ur" />
+            <input name="pwd" type="password" placeholder="密码" class="pw" />
+            <div style="padding-left:30px">
+                <img src="/login_images/login/untitled.jpg" width="150"><b style="color:red">获取验证码前，请先扫描二维码 关注公众号 绑定账号</b>
+                <input type="text" name="code" placeholder="请输入验证码"> <input type="button" value="获取验证码" onclick="sendCode(this)" class="code" />
+            </div>
+            </div>
         </div>
-        </div>
+        <br><br><br><br><br><br><br><br><br><br><br>
+        <div class="lg_foot">
+        <a href="/login/scan">扫码登录</a>
+        <input type="submit" value="Login In" class="bn" /></div>
+        {{csrf_field()}}
+    </form>
     </div>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <div class="lg_foot">
-    <a href="/login/scan">扫码登录</a>
-    <input type="submit" value="Login In" class="bn" /></div>
-    {{csrf_field()}}
-</form>
-</div>
-
 </body>
 </html>
 <script type="text/javascript" src="/js/jquery/jquery-3.2.1.min.js"></script>

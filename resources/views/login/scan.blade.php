@@ -10,8 +10,33 @@
 <body>
 
     <div style="text-align:center;padding-top:10%;">
-        <h3>请扫描下方二维码</h3>
-        <img src="http://qr.liantu.com/api.php?bg=f3f3f3&fg=ff0000&gc=222222&el=l&w=300&m=10&text={{$text}}"/>
+        <h2>微信扫描下方二维码</h2>
+        <h3 class="hint"></h3>
+        <img src="http://qr.liantu.com/api.php?bg=f3f3f3&fg=ff0000&gc=222222&el=l&w=300&m=10&text={{$text}}"/> <br>
+        <a href="/login">账号登录</a>
     </div>
 </body>
 </html>
+<script type="text/javascript" src="/js/jquery/jquery-3.2.1.min.js"></script>
+<script>
+    var lunxun=setInterval("findOpenid();",3000);
+    function setInterval(){
+        $id="{{$random}}";
+        $.ajax({
+            url:'/login/checkScan',
+            data:{id:id},
+            type:'get',
+            dataType:'json',
+            success:function(res){
+                if(res.code==1){
+                    $(".hint").attr('color','green');
+                }else{
+                    $(".hint").attr('color','red');
+                }
+                $(".hint").text(res.msg);
+                clearInterval(lunxun);
+                location.href='/admin';
+            }
+        })
+    }
+</script>
