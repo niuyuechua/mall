@@ -107,7 +107,7 @@ class TagController extends Controller
         ]);
         $json_res=$res->getBody();
         $arr_res=json_decode($json_res,true);
-        //dump($arr_res);die;
+        dump($arr_res);die;
         $tag_id=$arr_res['tag']['id'];
         $arr=[
             'tag_name'=>$tag_name,
