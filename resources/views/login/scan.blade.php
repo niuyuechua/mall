@@ -29,7 +29,6 @@
             dataType:'json',
             success:function(res){
                 if(res.code==1){
-                    $(".hint").attr('color','green');
                     location.href='/admin';
                 }else{
                     $(".hint").attr('color','red');
