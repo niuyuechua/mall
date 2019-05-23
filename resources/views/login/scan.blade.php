@@ -19,9 +19,9 @@
 </html>
 <script type="text/javascript" src="/js/jquery/jquery-3.2.1.min.js"></script>
 <script>
-    var lunxun=setInterval("findOpenid();",3000);
-    function setInterval(){
-        $id="{{$random}}";
+    var lunxun =setInterval("findOpenid()",3000);
+    function findOpenid(){
+        var id="{{$random}}";
         $.ajax({
             url:'/login/checkScan',
             data:{id:id},

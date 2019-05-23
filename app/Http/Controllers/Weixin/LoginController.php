@@ -34,9 +34,9 @@ class LoginController extends Controller
             //已扫描
             $data=BindModel::where(['openid'=>$openid])->first();
             if($data){
-                return ['code'=>1,'msg'=>'登录成功'];
+                echo ['code'=>1,'msg'=>'登录成功'];
             }else{
-                return ['code'=>2,'msg'=>'请先绑定微信账号'];
+                echo ['code'=>2,'msg'=>'请先绑定微信账号'];
             }
         }
     }
