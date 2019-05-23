@@ -24,7 +24,7 @@ class LoginController extends Controller
         $id=$_GET['id'];
         $openid=getOpenid();
         Cache::put($id,$openid,180);
-        return '扫码授权成功，正在登录...';
+        return '扫码授权成功，正在等待服务器响应...';
     }
     //检测是否扫描
     public function checkScan(){
