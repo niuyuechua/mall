@@ -34,6 +34,7 @@ class LoginController extends Controller
             //已扫描
             $data=BindModel::where(['openid'=>$openid])->first();
             if($data){
+                session('userInfo',$data);
                 return json_encode(['code'=>1,'msg'=>'登录成功']);
             }else{
                 return json_encode(['code'=>2,'msg'=>'请先绑定微信账号']);

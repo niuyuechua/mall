@@ -35,6 +35,11 @@ Route::group([
     Route::post('/tag/addTag','TagController@addTag');
     $router->resource('/taglist',TaglistController::class);
     Route::get('/makeTag','TaglistController@makeTag');
+    $router->resource('/users', BindController::class);
+    $router->resource('/role', RoleController::class);
+    $router->resource('/permission', PermissionController::class);
+    $router->resource('/addPms', RolePmsController::class);
+    $router->post('/addPms/doAdd', 'RolePmsController@doAdd')->name('admin.addPms');
 });
 //Route::get('/material','Admin\MaterialController@grid');
 //Route::any('/material/addImg','Admin\MaterialController@addImg');
