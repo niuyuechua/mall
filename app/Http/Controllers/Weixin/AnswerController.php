@@ -61,7 +61,7 @@ class AnswerController extends Controller
                             <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[您共答对'.$correct.'道题，共打错'.$error.']]></Content>
+                            <Content><![CDATA[您共答对'.$correct.'道题，打错'.$error.'道]]></Content>
                        </xml>';
                 }
             }
@@ -79,7 +79,7 @@ class AnswerController extends Controller
             if($last['answer']==''&&$last['true']==''){
                 $correct=AnswerModel::where(['id'=>$last['id']])->value('correct');
                 if($content==$correct){
-                    $last['answer']=$correct;
+                    $last['answer']=$content;
                     $last['true']=1;
                     $last->save();
                     echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
@@ -89,7 +89,7 @@ class AnswerController extends Controller
                             <Content><![CDATA[回答正确]]></Content>
                        </xml>';
                 }else{
-                    $last['answer']=$correct;
+                    $last['answer']=$content;
                     $last['true']=2;
                     $last->save();
                     echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
