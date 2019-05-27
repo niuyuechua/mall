@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Weixin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
+use App\AnswerModel;
+use App\UserAnswerModel;
 
 class AnswerController extends Controller
 {
@@ -38,9 +41,81 @@ class AnswerController extends Controller
                             <Content><![CDATA[欢迎关注'.$userInfo['nickname'].']]></Content>
                        </xml>';
                 }
+            }elseif($event=="CLICK"){
+                $eventKey=$obj->EventKey;
+                if($eventKey=='answer'){
+                    $data=AnswerModel::get()->toArray();
+                    $key=array_rand($data,1);
+                    $answer=$data[$key];
+                    UserAnswerModel::insert(['openid'=>$openid,'id'=>$answer['id']]);
+                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
+                            <CreateTime>.time().</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA['.$answer['topic'].''.\n.'A：'.$answer['answer_A'].'  B：'.$answer['answer_B'].']]></Content>
+                       </xml>';
+                }elseif($eventKey=='grade'){
+                    $correct=UserAnswerModel::where(['openid'=>$openid,'true'=>1])->count();
+                    $error=UserAnswerModel::where(['openid'=>$openid,'true'=>2])->count();
+                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
+                            <CreateTime>.time().</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[您共答对'.$correct.'道题，共打错'.$error.']]></Content>
+                       </xml>';
+                }
             }
         }elseif($msg_type=='text'){
-
+            $content=$obj->Content;
+            $last=UserAnswerModel::orderby('a_id','desc')->first();
+            if(empty($last)){
+                echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
+                            <CreateTime>.time().</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[请先点击答题]]></Content>
+                       </xml>';die;
+            }
+            if($last['answer']==''&&$last['true']==''){
+                $correct=AnswerModel::where(['id'=>$last['id']])->value('correct');
+                if($content==$correct){
+                    UserAnswerModel::orderby('a_id','desc')->update(['answer'=>$content,'true'=>1]);
+                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
+                            <CreateTime>.time().</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[回答正确]]></Content>
+                       </xml>';
+                }else{
+                    UserAnswerModel::orderby('a_id','desc')->update(['answer'=>$content,'true'=>2]);
+                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
+                            <CreateTime>.time().</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[回答错误]]></Content>
+                       </xml>';
+                }
+            }else{
+                echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
+                            <CreateTime>.time().</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[该题目已回答，请重新抽题]]></Content>
+                       </xml>';
+            }
+        }
+    }
+    public function addTopic(){
+        return view('answer.addTopic');
+    }
+    public function doAdd(){
+        $data=request()->all();
+        unset($data['_token']);
+        $res=AnswerModel::insert($data);
+        if($res){
+            echo '添加成功';
+        }else{
+            echo '添加失败';
         }
     }
     //创建菜单
