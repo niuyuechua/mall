@@ -107,6 +107,7 @@ class RolePmsController extends Controller
                 'pms_id'=>$v
             ];
         }
+        //  一条sql语句添加多条数据
         $res=RolePmsModel::insert($insertData);
         if($res){
             echo '分配成功';
