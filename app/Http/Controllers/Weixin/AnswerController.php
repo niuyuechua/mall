@@ -79,7 +79,9 @@ class AnswerController extends Controller
             if($last['answer']==''&&$last['true']==''){
                 $correct=AnswerModel::where(['id'=>$last['id']])->value('correct');
                 if($content==$correct){
-                    UserAnswerModel::orderby('a_id','desc')->update(['answer'=>$content,'true'=>1]);
+                    $last['answer']=$correct;
+                    $last['true']=1;
+                    $last->save();
                     echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
@@ -87,7 +89,9 @@ class AnswerController extends Controller
                             <Content><![CDATA[回答正确]]></Content>
                        </xml>';
                 }else{
-                    UserAnswerModel::orderby('a_id','desc')->update(['answer'=>$content,'true'=>2]);
+                    $last['answer']=$correct;
+                    $last['true']=2;
+                    $last->save();
                     echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
                             <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
