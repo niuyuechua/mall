@@ -52,7 +52,7 @@ class AnswerController extends Controller
                             <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA['.$answer['topic'].'."\n".A：'.$answer['answer_A'].'  B：'.$answer['answer_B'].']]></Content>
+                            <Content><![CDATA['.$answer['topic'].'      A：'.$answer['answer_A'].'  B：'.$answer['answer_B'].']]></Content>
                        </xml>';
                 }elseif($eventKey=='grade'){
                     $correct=UserAnswerModel::where(['openid'=>$openid,'true'=>1])->count();
