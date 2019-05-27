@@ -16,7 +16,7 @@ class AnswerController extends Controller
     public function wxEvent(){
         $content=file_get_contents("php://input");
         $time=date("Y-m-d H:i:s");
-        $str=$time.$content.'\n';
+        $str=$time.$content."\n";
         file_put_contents("logs/wx_event.log",$str,FILE_APPEND);
         $obj=simplexml_load_string($content);
         $pb_id=$obj->ToUserName;
@@ -52,7 +52,7 @@ class AnswerController extends Controller
                             <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
                             <CreateTime>.time().</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA['.$answer['topic'].''.\n.'A：'.$answer['answer_A'].'  B：'.$answer['answer_B'].']]></Content>
+                            <Content><![CDATA['.$answer['topic'].'."\n".A：'.$answer['answer_A'].'  B：'.$answer['answer_B'].']]></Content>
                        </xml>';
                 }elseif($eventKey=='grade'){
                     $correct=UserAnswerModel::where(['openid'=>$openid,'true'=>1])->count();

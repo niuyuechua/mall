@@ -17,7 +17,7 @@ class ExamController extends Controller
     public function wxEvent(){
         $content=file_get_contents("php://input");
         $time=date("Y-m-d H:i:s");
-        $str=$time.$content.'\n';
+        $str=$time.$content."\n";
         file_put_contents("logs/wx_event.log",$str,FILE_APPEND);
         $obj=simplexml_load_string($content);
         $pb_id=$obj->ToUserName;
