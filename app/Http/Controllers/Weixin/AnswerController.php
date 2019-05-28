@@ -27,19 +27,11 @@ class AnswerController extends Controller
             if($event=="subscribe"){
                 $userInfo=WxUserModel::where(['openid'=>$openid])->first();
                 if($userInfo){
-                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
-                            <CreateTime>.time().</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA['.'欢迎回来'.$userInfo['nickname'].']]></Content>
-                       </xml>';
+                    $str="欢迎回来".$userInfo['nickname'];
+                    $this->sendTextMsg($openid,$str);
                 }else{
-                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
-                            <CreateTime>.time().</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[欢迎关注'.$userInfo['nickname'].']]></Content>
-                       </xml>';
+                    $str="欢迎关注".$userInfo['nickname'];
+                    $this->sendTextMsg($openid,$str);
                 }
             }elseif($event=="CLICK"){
                 $eventKey=$obj->EventKey;
@@ -48,66 +40,48 @@ class AnswerController extends Controller
                     $key=array_rand($data,1);
                     $answer=$data[$key];
                     UserAnswerModel::insert(['openid'=>$openid,'id'=>$answer['id']]);
-                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
-                            <CreateTime>.time().</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA['.$answer['topic'].'      A：'.$answer['answer_A'].'  B：'.$answer['answer_B'].']]></Content>
-                       </xml>';
+                    $str=$answer['topic']."\n"."A：".$answer['answer_A']."  B：".$answer['answer_B'];
+                    $this->sendTextMsg($openid,$str);
                 }elseif($eventKey=='grade'){
                     $correct=UserAnswerModel::where(['openid'=>$openid,'true'=>1])->count();
                     $error=UserAnswerModel::where(['openid'=>$openid,'true'=>2])->count();
-                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
-                            <CreateTime>.time().</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[您共答对'.$correct.'道题，打错'.$error.'道]]></Content>
-                       </xml>';
+                    $str="您共答对".$correct."道题，答错".$error."道";
+                    $this->sendTextMsg($openid,$str);
                 }
             }
         }elseif($msg_type=='text'){
             $content=$obj->Content;
             $last=UserAnswerModel::orderby('a_id','desc')->first();
             if(empty($last)){
-                echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
-                            <CreateTime>.time().</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[请先点击答题]]></Content>
-                       </xml>';die;
+                $str="请先点击答题";
+                $this->sendTextMsg($openid,$str);
             }
             if($last['answer']==''&&$last['true']==''){
                 $correct=AnswerModel::where(['id'=>$last['id']])->value('correct');
+                $last['answer']=$content;
                 if($content==$correct){
-                    $last['answer']=$content;
                     $last['true']=1;
-                    $last->save();
-                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
-                            <CreateTime>.time().</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[回答正确]]></Content>
-                       </xml>';
+                    $str="回答正确";
                 }else{
-                    $last['answer']=$content;
                     $last['true']=2;
-                    $last->save();
-                    echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
-                            <CreateTime>.time().</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[回答错误]]></Content>
-                       </xml>';
+                    $str="回答错误";
                 }
+                $last->save();
+                $this->sendTextMsg($openid,$str);
             }else{
-                echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
-                            <FromUserName><![CDATA['.$pb_id.']]></FromUserName>
-                            <CreateTime>.time().</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[该题目已回答，请重新抽题]]></Content>
-                       </xml>';
+                $str="该题目已回答，请重新抽题";
+                $this->sendTextMsg($openid,$str);
             }
         }
+    }
+    public function sendTextMsg($openid,$str){
+        echo '<xml>
+                  <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                  <FromUserName><![CDATA[gh_3174a6d2a0ac]]></FromUserName>
+                  <CreateTime>'.time().'</CreateTime>
+                  <MsgType><![CDATA[text]]></MsgType>
+                  <Content><![CDATA['.$str.']]></Content>
+                </xml>';
     }
     public function addTopic(){
         return view('answer.addTopic');

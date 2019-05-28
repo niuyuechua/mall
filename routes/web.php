@@ -20,8 +20,8 @@ Route::get('/info',function(){
 });
 
 //微信公众平台
-//Route::get('wx/valid','Weixin\WxController@valid');
-//Route::post('wx/valid','Weixin\WxController@wxEvent');
+Route::get('wx/valid','Weixin\WxController@valid');
+Route::post('wx/valid','Weixin\WxController@wxEvent');
 Route::get('wx/getAccessToken','Weixin\WxController@getAccessToken');
 Route::get('wx/test','Weixin\WxController@test');
 //表白墙
@@ -32,8 +32,8 @@ Route::get('wx/test','Weixin\WxController@test');
 //Route::post('wx/valid','Weixin\ExamController@wxEvent');
 //Route::get('wx/getAccessToken','Weixin\ExamController@getAccessToken');
 //八月（2）第四周测试
-Route::get('wx/valid','Weixin\AnswerController@valid');
-Route::post('wx/valid','Weixin\AnswerController@wxEvent');
+//Route::get('wx/valid','Weixin\AnswerController@valid');
+//Route::post('wx/valid','Weixin\AnswerController@wxEvent');
 Route::get('wx/addTopic','Weixin\AnswerController@addTopic');
 Route::post('wx/doAdd','Weixin\AnswerController@doAdd');
 //自定义菜单
