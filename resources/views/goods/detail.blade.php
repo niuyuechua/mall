@@ -111,7 +111,7 @@
             wx.updateAppMessageShareData({
                 title: '最新商品', // 分享标题
                 desc: '啦啦啦', // 分享描述
-                link: '1809niuyuechyuang.comcto.com ', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                link: 'www.nyc666666.top', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                 imgUrl: "http://www.nyc666666.top/goodsimg/{{$goods['goods_img']}}", // 分享图标
                 success: function () {
                     // 设置成功
