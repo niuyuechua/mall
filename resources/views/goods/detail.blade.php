@@ -114,7 +114,7 @@
                 link: 'http://www.nyc666666.top', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                 imgUrl: "http://www.nyc666666.top/goodsimg/{{$goods['goods_img']}}", // 分享图标
                 success: function () {
-                    alert("需在用户可能点击分享按钮前就先调用");
+                    alert("在用户可能点击分享按钮前就先调用分享接口");
                 }
             })
 
