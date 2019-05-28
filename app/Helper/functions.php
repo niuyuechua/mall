@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Redis;
         $u=json_decode($data);
         return $u;
     }
-    //获取生成带参数二维码的ticket
+    //获取用于调用微信JS接口的临时票据jsapi_ticket
     function getTicket(){
         $key="wx_jsapi_ticket";
         $ticket=Redis::get($key);
