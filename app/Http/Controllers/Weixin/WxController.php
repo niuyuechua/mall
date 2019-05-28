@@ -30,15 +30,19 @@ class WxController extends Controller
         //var_dump($_SERVER['SERVER_NAME']);die;
 
         //文件缓存
-        $filename="assess_token.txt";
-        if(file_exists($filename)&&time()-filemtime($filename)<=7200){
-            echo '存在';
-            $token=file_get_contents($filename);
-        }else{
-            echo '不存在';
-            $token=$this->getAccessToken();
-            file_put_contents($filename,$token);
-        }
+//        $filename="assess_token.txt";
+//        if(file_exists($filename)&&time()-filemtime($filename)<=7200){
+//            echo '存在';
+//            $token=file_get_contents($filename);
+//        }else{
+//            echo '不存在';
+//            $token=$this->getAccessToken();
+//            file_put_contents($filename,$token);
+//        }
+        $sign=md5("牛月闯1910a");
+        $url="http://47.105.106.201/crontab.php?name=牛月闯&age=19&sign=".$sign;
+        $res=file_get_contents($url);
+        dump($res);
     }
     //微信服务器推送通知
     public function wxEvent(){
