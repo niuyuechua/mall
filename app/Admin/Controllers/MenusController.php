@@ -82,10 +82,9 @@ class MenusController extends Controller
         $grid = new Grid(new MenusModel);
 
         $grid->id('Id');
-        $grid->name('Name');
-        $grid->type('Type');
-        $grid->menu_key('Menu key');
-        $grid->see_num('See num');
+        $grid->name('菜单名称');
+        $grid->type('菜单类型');
+        $grid->see_num('点击量');
 
         return $grid;
     }
@@ -101,9 +100,10 @@ class MenusController extends Controller
         $show = new Show(MenusModel::findOrFail($id));
 
         $show->id('Id');
-        $show->name('菜单名称');
-        $show->type('菜单类型');
-        $show->see_num('点击量');
+        $show->name('Name');
+        $show->type('Type');
+        $show->menu_key('Menu key');
+        $show->see_num('See num');
 
         return $show;
     }
