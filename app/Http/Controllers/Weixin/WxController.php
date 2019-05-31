@@ -19,6 +19,7 @@ use App\ActModel;
 use App\LoveModel;
 use App\ChannelModel;
 use App\ReplyModel;
+use App\MenusModel;
 
 class WxController extends Controller
 {
@@ -77,13 +78,13 @@ class WxController extends Controller
         if($msg_type=='event'){
             $event_key=$obj->EventKey;
             if($event=='CLICK' && $event_key=='function declaration'){
-                ReplyModel::where(['menu_key'=>$event_key])->increment('see_num');
+                MenusModel::where(['menu_key'=>$event_key])->increment('see_num');
                 $str="Hello";
                 $this->sendTextMsg($openid,$str);
             }elseif($event=='VIEW'){
-                ReplyModel::where(['menu_key'=>'https://pvp.qq.com/'])->increment('see_num');
+                MenusModel::where(['menu_key'=>'https://pvp.qq.com/'])->increment('see_num');
             }elseif($event=='pic_weixin'){
-                ReplyModel::where(['menu_key'=>'sendPic'])->increment('see_num');
+                MenusModel::where(['menu_key'=>'sendPic'])->increment('see_num');
                 $str="发送图片";
                 $this->sendTextMsg($openid,$str);
             }
