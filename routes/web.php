@@ -37,9 +37,9 @@ Route::get('wx/test','Weixin\WxController@test');
 Route::get('wx/addTopic','Weixin\AnswerController@addTopic');
 Route::post('wx/doAdd','Weixin\AnswerController@doAdd');
 //自定义菜单
-//Route::get('wx/createMent','Weixin\WxController@createMent');
+Route::get('wx/createMent','Weixin\WxController@createMent');
 //Route::get('wx/createMent','Weixin\LoveController@createMent');     //表白墙
-Route::get('wx/createMent','Weixin\AnswerController@createMent');     //八月（2）第四周测试
+//Route::get('wx/createMent','Weixin\AnswerController@createMent');     //八月（2）第四周测试
 //图文消息详情
 Route::get('wx/goodsDetail','Weixin\WxController@goodsDetail');
 Route::get('wx/phoneDetail','Weixin\WxController@phoneDetail');

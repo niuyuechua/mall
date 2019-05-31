@@ -40,6 +40,9 @@ Route::group([
     $router->resource('/permission', PermissionController::class);
     $router->resource('/addPms', RolePmsController::class);
     $router->post('/addPms/doAdd', 'RolePmsController@doAdd')->name('admin.addPms');
+    $router->resource('/addReply', ReplyController::class);
+    $router->post('/addReply/doAdd', 'ReplyController@doAdd')->name('admin.addReply');
+    $router->resource('/menus', MenusController::class);
 });
 //Route::get('/material','Admin\MaterialController@grid');
 //Route::any('/material/addImg','Admin\MaterialController@addImg');
