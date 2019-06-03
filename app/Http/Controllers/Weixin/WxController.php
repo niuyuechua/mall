@@ -75,375 +75,340 @@ class WxController extends Controller
                   </Image>
                 </xml>';
         }
+
+        //第八个月（2）月考
+//        if($msg_type=='event'){
+//            $event_key=$obj->EventKey;
+//            if($event=='CLICK' && $event_key=='function declaration'){
+//                MenusModel::where(['menu_key'=>$event_key])->increment('see_num');
+//                $str="Hello";
+//                $this->sendTextMsg($openid,$str);
+//            }elseif($event=='VIEW'){
+//                MenusModel::where(['menu_key'=>'https://pvp.qq.com/'])->increment('see_num');
+//            }elseif($event=='pic_weixin'){
+//                MenusModel::where(['menu_key'=>'sendPic'])->increment('see_num');
+//                $str="发送图片";
+//                $this->sendTextMsg($openid,$str);
+//            }
+//        }
+
+        //全部事件
         if($msg_type=='event'){
-            $event_key=$obj->EventKey;
-            if($event=='CLICK' && $event_key=='function declaration'){
-                MenusModel::where(['menu_key'=>$event_key])->increment('see_num');
-                $str="Hello";
+            if($event=='subscribe'){
+                $event_key=$obj->EventKey;  //场景
+                //判断扫描的是普通二维码还是带参数的二维码
+                if($event_key==''){
+                    //普通二维码
+                    $userInfo=WxUserModel::where('openid','=',"$openid")->first();
+                    if($userInfo){
+                        WxUserModel::where(['openid'=>$openid])->update(['status'=>1]);
+                        echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>.time().</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA['.'欢迎回来'.$userInfo['nickname'].']]></Content>
+                       </xml>';
+                    }else{
+                        //获取新用户信息
+                        $info = $this->getUserInfo($openid);//对象格式
+                        //用户信息入库
+                        $data=[
+                            'openid'=>$info->openid,
+                            'nickname'=>$info->nickname,
+                            'sex'=>$info->sex,
+                            'headimgurl'=>$info->headimgurl,
+                            'subscribe_time'=>$info->subscribe_time
+                        ];
+                        $res = WxUserModel::insert($data);
+                        echo '<xml>
+                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>'.time().'</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA['.'欢迎关注'. $info->nickname .']]></Content>
+                          </xml>';
+                    }
+                }else{
+                    //带参数的二维码
+                    $event_key=substr($event_key,8);    //参数
+                    $info = $this->getUserInfo($openid);//对象格式
+                    //用户信息入库
+                    $data=[
+                        'openid'=>$info->openid,
+                        'nickname'=>$info->nickname,
+                        'sex'=>$info->sex,
+                        'headimgurl'=>$info->headimgurl,
+                        'subscribe_time'=>$info->subscribe_time,
+                        'event_key'=>$event_key
+                    ];
+                    TmpUserModel::insert($data);
+
+                    //根据$event_key（渠道标识）修改该渠道的关注人数
+                    $num=ChannelModel::where(['channel_sign'=>$event_key])->first()->num;
+                    ChannelModel::where(['channel_sign'=>$event_key])->update(['num'=>$num+1]);
+
+                    $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
+                    foreach($goods as $k=>$v){
+                        $img=$v['goods_img'];
+                        $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
+                        $res='<xml>
+                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                          <CreateTime>'.time().'</CreateTime>
+                          <MsgType><![CDATA[news]]></MsgType>
+                          <ArticleCount>1</ArticleCount>
+                          <Articles>
+                            <item>
+                              <Title><![CDATA[欢迎新用户]]></Title>
+                              <Description><![CDATA[分享有好礼]]></Description>
+                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
+                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
+                            </item>
+                          </Articles>
+                        </xml>';
+                        echo $res;
+                    }
+                }
+            }
+            if($event=='SCAN'){
+                //带参数的二维码
+                $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
+                foreach($goods as $k=>$v){
+                    $img=$v['goods_img'];
+                    $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
+                    $res='<xml>
+                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                          <CreateTime>'.time().'</CreateTime>
+                          <MsgType><![CDATA[news]]></MsgType>
+                          <ArticleCount>1</ArticleCount>
+                          <Articles>
+                            <item>
+                              <Title><![CDATA[欢迎回来呀]]></Title>
+                              <Description><![CDATA[分享有好礼哟]]></Description>
+                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
+                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
+                            </item>
+                          </Articles>
+                        </xml>';
+                    echo $res;
+                }
+            }
+            if($event=='unsubscribe'){
+                WxUserModel::where(['openid'=>$openid])->update(['status'=>0]);
+
+                //根据用户openid获取用户关注渠道（渠道标识）
+                $channel_sign=TmpUserModel::where(['openid'=>$openid])->value("event_key");
+                //根据$event_key（渠道标识）修改该渠道的关注人数
+                ChannelModel::where(['channel_sign'=>$channel_sign])->decrement('num');
+                //删除取关用户
+                TmpUserModel::where(['openid'=>$openid])->delete();
+            }
+            //点击菜单拉取消息
+            $eventKey=$obj->EventKey;   //创建click菜单时设置的key值
+            if($event=='CLICK' && $eventKey=='function declaration'){
+                $str="你好，欢迎关注！"."\n\n"."发送1 展示全部同学姓名"."\n\n"."发送2 回复最好看同学姓名".
+                    "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
+                    "\n\n"."发送城市+天气 查询该城市未来一周天气"."\n\n"."还有性感机器人在线陪聊哦    ~O(∩_∩)O~";
                 $this->sendTextMsg($openid,$str);
-            }elseif($event=='VIEW'){
-                MenusModel::where(['menu_key'=>'https://pvp.qq.com/'])->increment('see_num');
-            }elseif($event=='pic_weixin'){
-                MenusModel::where(['menu_key'=>'sendPic'])->increment('see_num');
-                $str="发送图片";
-                $this->sendTextMsg($openid,$str);
+            }elseif($msg_type=='event'){
+                if($event=='CLICK' && $eventKey=='love'){
+                    $this->act($openid,"我要表白");
+                    $str="请输入你要表白的人的名字";
+                    $this->sendTextMsg($openid,$str);
+                }elseif($event=='CLICK' && $eventKey=='Looking for love'){
+                    $this->act($openid,"查看表白");
+                    $str="请输入要查询的人的名字";
+                    $this->sendTextMsg($openid,$str);
+                }
             }
         }
-        //全部事件
-//        if($msg_type=='event'){
-//            if($event=='subscribe'){
-//                $event_key=$obj->EventKey;  //场景
-//                //判断扫描的是普通二维码还是带参数的二维码
-//                if($event_key==''){
-//                    //普通二维码
-//                    $userInfo=WxUserModel::where('openid','=',"$openid")->first();
-//                    if($userInfo){
-//                        WxUserModel::where(['openid'=>$openid])->update(['status'=>1]);
-//                        echo '<xml><ToUserName><![CDATA['.$openid.']]></ToUserName>
-//                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-//                            <CreateTime>.time().</CreateTime>
-//                            <MsgType><![CDATA[text]]></MsgType>
-//                            <Content><![CDATA['.'欢迎回来'.$userInfo['nickname'].']]></Content>
-//                       </xml>';
-//                    }else{
-//                        //获取新用户信息
-//                        $info = $this->getUserInfo($openid);//对象格式
-//                        //用户信息入库
-//                        $data=[
-//                            'openid'=>$info->openid,
-//                            'nickname'=>$info->nickname,
-//                            'sex'=>$info->sex,
-//                            'headimgurl'=>$info->headimgurl,
-//                            'subscribe_time'=>$info->subscribe_time
-//                        ];
-//                        $res = WxUserModel::insert($data);
-//                        echo '<xml>
-//                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
-//                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-//                            <CreateTime>'.time().'</CreateTime>
-//                            <MsgType><![CDATA[text]]></MsgType>
-//                            <Content><![CDATA['.'欢迎关注'. $info->nickname .']]></Content>
-//                          </xml>';
-//                    }
-//                }else{
-//                    //带参数的二维码
-//                    $event_key=substr($event_key,8);    //参数
-//                    $info = $this->getUserInfo($openid);//对象格式
-//                    //用户信息入库
-//                    $data=[
-//                        'openid'=>$info->openid,
-//                        'nickname'=>$info->nickname,
-//                        'sex'=>$info->sex,
-//                        'headimgurl'=>$info->headimgurl,
-//                        'subscribe_time'=>$info->subscribe_time,
-//                        'event_key'=>$event_key
-//                    ];
-//                    TmpUserModel::insert($data);
-//
-//                    //根据$event_key（渠道标识）修改该渠道的关注人数
-//                    $num=ChannelModel::where(['channel_sign'=>$event_key])->first()->num;
-//                    ChannelModel::where(['channel_sign'=>$event_key])->update(['num'=>$num+1]);
-//
-//                    $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
-//                    foreach($goods as $k=>$v){
-//                        $img=$v['goods_img'];
-//                        $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
-//                        $res='<xml>
-//                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
-//                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-//                          <CreateTime>'.time().'</CreateTime>
-//                          <MsgType><![CDATA[news]]></MsgType>
-//                          <ArticleCount>1</ArticleCount>
-//                          <Articles>
-//                            <item>
-//                              <Title><![CDATA[欢迎新用户]]></Title>
-//                              <Description><![CDATA[分享有好礼]]></Description>
-//                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
-//                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
-//                            </item>
-//                          </Articles>
-//                        </xml>';
-//                        echo $res;
-//                    }
-//                }
-//            }
-//            if($event=='SCAN'){
-//                //带参数的二维码
-//                $goods=GoodsModel::orderby('create_time','desc')->limit(5)->get()->toArray();
-//                foreach($goods as $k=>$v){
-//                    $img=$v['goods_img'];
-//                    $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
-//                    $res='<xml>
-//                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
-//                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-//                          <CreateTime>'.time().'</CreateTime>
-//                          <MsgType><![CDATA[news]]></MsgType>
-//                          <ArticleCount>1</ArticleCount>
-//                          <Articles>
-//                            <item>
-//                              <Title><![CDATA[欢迎回来呀]]></Title>
-//                              <Description><![CDATA[分享有好礼哟]]></Description>
-//                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
-//                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
-//                            </item>
-//                          </Articles>
-//                        </xml>';
-//                    echo $res;
-//                }
-//            }
-//            if($event=='unsubscribe'){
-//                WxUserModel::where(['openid'=>$openid])->update(['status'=>0]);
-//
-//                //根据用户openid获取用户关注渠道（渠道标识）
-//                $channel_sign=TmpUserModel::where(['openid'=>$openid])->value("event_key");
-//                //根据$event_key（渠道标识）修改该渠道的关注人数
-//                ChannelModel::where(['channel_sign'=>$channel_sign])->decrement('num');
-//                //删除取关用户
-//                TmpUserModel::where(['openid'=>$openid])->delete();
-//            }
-//            //点击菜单拉取消息
-//            $eventKey=$obj->EventKey;   //创建click菜单时设置的key值
-//            if($event=='CLICK' && $eventKey=='function declaration'){
-//                $str="你好，欢迎关注！"."\n\n"."发送1 展示全部同学姓名"."\n\n"."发送2 回复最好看同学姓名".
-//                    "\n\n"."发送图片 可以斗图哟"."\n\n"."发送最新商品 有你想要的哦"."\n\n"."发送小米 查看小米最新神机，也可以发送你喜欢的小米手机哦".
-//                    "\n\n"."发送城市+天气 查询该城市未来一周天气"."\n\n"."还有性感机器人在线陪聊哦    ~O(∩_∩)O~";
-//                $this->sendTextMsg($openid,$str);
-//            }elseif($msg_type=='event'){
-//                if($event=='CLICK' && $eventKey=='love'){
-//                    $this->act($openid,"我要表白");
-//                    $str="请输入你要表白的人的名字";
-//                    $this->sendTextMsg($openid,$str);
-//                }elseif($event=='CLICK' && $eventKey=='Looking for love'){
-//                    $this->act($openid,"查看表白");
-//                    $str="请输入要查询的人的名字";
-//                    $this->sendTextMsg($openid,$str);
-//                }
-//            }
-//        }
         //文本消息
-//        if($msg_type=='text'){
-//            //表白墙
-//            $last_act=ActModel::orderBy('act_time','desc')->first();
-//            $act_time=$last_act->act_time;
-//            if(time()-$act_time<=60){
-//                $act_name=$last_act->act_name;
-//                if($act_name=='我要表白'){
-//                    //根据用户上一步执行的操作，判断本步执行的操作（输入表白人名字）
-//                    $this->act($openid,"输入表白人名字");
-//                    //表白人名字入库
-//                    $arr=[
-//                        'openid'=>$openid,
-//                        'name'=>$obj->Content,
-//                        'content'=>''
-//                    ];
-//                    LoveModel::insert($arr);
-//                    $str="请输入表白内容";
-//                    $this->sendTextMsg($openid,$str);
-//                }elseif($act_name=='输入表白人名字'){
-//                    //表白内容入库
-//                    $id=LoveModel::orderBy('id','desc')->first()->id;
-//                    $content=$obj->Content;
-//                    LoveModel::where(['id'=>$id])->update(['content'=>$content]);
-//                    $str="表白成功";
-//                    $this->sendTextMsg($openid,$str);
-//                }elseif($act_name=='查看表白'){
-//                    $name=$obj->Content;
-//                    $data=LoveModel::where(['name'=>$name])->get();
-//                    $num=count($data,1);
-//                    if($num==0){
-//                        $str="$name 还未被表白";
-//                    }else{
-//                        $content='';
-//                        foreach($data as $k=>$v){
-//                            $content.=$v['content']."\n";
-//                        }
-//                        $str="$name 被表白次数：$num"."\n"."表白内容："."\n".$content;
-//                    }
-//                    $this->sendTextMsg($openid,$str);
-//                }
-//            }
-//            //回复图文
-//            if($obj->Content=='最新商品') {
-//                $goods = GoodsModel::orderby('create_time', 'desc')->limit(5)->get()->toArray();
-//                //$url="https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$this->getAccessToken()."&type=image";
-//                foreach ($goods as $k => $v) {
-//                    $img = $v['goods_img'];
-//                    $picurl = "http://www.nyc666666.top/goodsimg/" . $img;
-//                    $res = '<xml>
-//                          <ToUserName><![CDATA[' . $openid . ']]></ToUserName>
-//                          <FromUserName><![CDATA[' . $kf_id . ']]></FromUserName>
-//                          <CreateTime>' . time() . '</CreateTime>
-//                          <MsgType><![CDATA[news]]></MsgType>
-//                          <ArticleCount>1</ArticleCount>
-//                          <Articles>
-//                            <item>
-//                              <Title><![CDATA[最新商品]]></Title>
-//                              <Description><![CDATA[啦啦啦]]></Description>
-//                              <PicUrl><![CDATA[' . $picurl . ']]></PicUrl>
-//                              <Url><![CDATA[http://www.nyc666666.top/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
-//                            </item>
-//                          </Articles>
-//                        </xml>';
-//                    echo $res;
-//                }
-//            }
-//            //回复图文（查询数据库，存在返回详情，不存在返回最新商品详情）
-//            if(strpos($obj->Content,'小米')){
-//                $name=$obj->Content;
-//                $data=PhoneModel::where(['name'=>$name])->first()->toArray();
-//                //dump($data);
-//                if(!$data){
-//                    $data=PhoneModel::orderby('up_time','desc')->first()->toArray();
-//                }
-//                $img=$data['img'];
-//                $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
-//                $res='<xml>
-//                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
-//                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-//                          <CreateTime>'.time().'</CreateTime>
-//                          <MsgType><![CDATA[news]]></MsgType>
-//                          <ArticleCount>1</ArticleCount>
-//                          <Articles>
-//                            <item>
-//                              <Title><![CDATA['.$data['name'].']]></Title>
-//                              <Description><![CDATA[你说小米，我说6 oy]]></Description>
-//                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
-//                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/phoneDetail?id='.$data['id'].']]></Url>
-//                            </item>
-//                          </Articles>
-//                        </xml>';
-//                echo $res;
-//            }
-//            //查询城市天气
-//            if(strpos($obj->Content,'+天气')){
-//                $city=explode('+',$obj->Content)[0];
-//                //$url="https://free-api.heweather.net/s6/weather/now?location=".$city."&key=HE1905052041271004";
-//                $url="http://api.k780.com?app=weather.future&weaid=".$city."&appkey=42246&sign=94cfdcf87e9594bdbc981a6e349fd50f&format=json";
-//                $res=file_get_contents($url);
-//                $arr=json_decode($res,true);
-//                if($arr['success']==0){
-//                    echo '<xml>
-//                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
-//                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-//                            <CreateTime>'.time().'</CreateTime>
-//                            <MsgType><![CDATA[text]]></MsgType>
-//                            <Content><![CDATA[城市错误]]></Content>
-//                          </xml>';
-//                }elseif($arr['success']==1){
-//                    $str='';
-//                    foreach($arr['result'] as $k=>$v){
-//                        $days=$v['days'];
-//                        $week=$v['week'];
-//                        $city=$v['citynm'];// 	该地区／城市的上级城市
-//                        $tmp=$v['temperature'];//温度
-//                        $cond_txt=$v['weather'];//天气状况
-//                        $wind_dir=$v['wind'];//风向
-//                        $wind_sc=$v['winp'];//风力
-//                        $str.="日期：".$days. $week."\n"."城市名称：".$city."\n"."温度：".$tmp."\n"."天气状况：".$cond_txt."\n".
-//                            "风向：".$wind_dir."\n". "风力：". $wind_sc."\n"."\n";
-//                    }
-//                    echo '<xml>
-//                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
-//                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-//                            <CreateTime>'.time().'</CreateTime>
-//                            <MsgType><![CDATA[text]]></MsgType>
-//                            <Content><![CDATA['.$str.']]></Content>
-//                          </xml>';
-//                }
-//            }
-//            //回复文本
-//            $stu_name=[
-//                '牛月闯',
-//                '王威龙',
-//                '张三',
-//                '李四',
-//                '王五',
-//                '赵六',
-//            ];
-//            if($obj->Content==1){
-//                $str=implode("\n",$stu_name);
-//                $this->sendTextMsg($openid,$str);
-//            }elseif($obj->Content==2){
-//                $num=count($stu_name);
-//                $rand_num=rand(0,$num-1);
-//                $str=$stu_name[$rand_num];
-//                $this->sendTextMsg($openid,$str);
-//            }elseif($obj->Content=='图片'){
-//                //回复图片
-//                echo '<xml>
-//                      <ToUserName><![CDATA['.$openid.']]></ToUserName>
-//                      <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-//                      <CreateTime>'.time().'</CreateTime>
-//                      <MsgType><![CDATA[image]]></MsgType>
-//                      <Image>
-//                        <MediaId><![CDATA[0OX-rmhHOdhBzCZmOSlTJ-KUIUVRl6L_hWx5O9woHi3raTu8Z5MwcNrpOcg1Pe4Z]]></MediaId>
-//                      </Image>
-//                    </xml>';
-//            }else{
-//                //机器人
-//                $info=$obj->Content;
-//                $url="http://www.tuling123.com/openapi/api?key=1029047843994443a4f7aae786cb3cbe&info=".$info;
-//                $res=file_get_contents($url);
-//                $arr=json_decode($res,true);
-//                $this->sendTextMsg($openid,$arr['text']);
-//            }
-//        }
+        if($msg_type=='text'){
+            //表白墙
+            $last_act=ActModel::orderBy('act_time','desc')->first();
+            $act_time=$last_act->act_time;
+            if(time()-$act_time<=60){
+                $act_name=$last_act->act_name;
+                if($act_name=='我要表白'){
+                    //根据用户上一步执行的操作，判断本步执行的操作（输入表白人名字）
+                    $this->act($openid,"输入表白人名字");
+                    //表白人名字入库
+                    $arr=[
+                        'openid'=>$openid,
+                        'name'=>$obj->Content,
+                        'content'=>''
+                    ];
+                    LoveModel::insert($arr);
+                    $str="请输入表白内容";
+                    $this->sendTextMsg($openid,$str);
+                }elseif($act_name=='输入表白人名字'){
+                    //表白内容入库
+                    $id=LoveModel::orderBy('id','desc')->first()->id;
+                    $content=$obj->Content;
+                    LoveModel::where(['id'=>$id])->update(['content'=>$content]);
+                    $str="表白成功";
+                    $this->sendTextMsg($openid,$str);
+                }elseif($act_name=='查看表白'){
+                    $name=$obj->Content;
+                    $data=LoveModel::where(['name'=>$name])->get();
+                    $num=count($data,1);
+                    if($num==0){
+                        $str="$name 还未被表白";
+                    }else{
+                        $content='';
+                        foreach($data as $k=>$v){
+                            $content.=$v['content']."\n";
+                        }
+                        $str="$name 被表白次数：$num"."\n"."表白内容："."\n".$content;
+                    }
+                    $this->sendTextMsg($openid,$str);
+                }
+            }
+            //回复图文
+            if($obj->Content=='最新商品') {
+                $goods = GoodsModel::orderby('create_time', 'desc')->limit(5)->get()->toArray();
+                //$url="https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$this->getAccessToken()."&type=image";
+                foreach ($goods as $k => $v) {
+                    $img = $v['goods_img'];
+                    $picurl = "http://www.nyc666666.top/goodsimg/" . $img;
+                    $res = '<xml>
+                          <ToUserName><![CDATA[' . $openid . ']]></ToUserName>
+                          <FromUserName><![CDATA[' . $kf_id . ']]></FromUserName>
+                          <CreateTime>' . time() . '</CreateTime>
+                          <MsgType><![CDATA[news]]></MsgType>
+                          <ArticleCount>1</ArticleCount>
+                          <Articles>
+                            <item>
+                              <Title><![CDATA[最新商品]]></Title>
+                              <Description><![CDATA[啦啦啦]]></Description>
+                              <PicUrl><![CDATA[' . $picurl . ']]></PicUrl>
+                              <Url><![CDATA[http://www.nyc666666.top/wx/goodsDetail?goods_id='.$v['goods_id'].']]></Url>
+                            </item>
+                          </Articles>
+                        </xml>';
+                    echo $res;
+                }
+            }
+            //回复图文（查询数据库，存在返回详情，不存在返回最新商品详情）
+            if(strpos($obj->Content,'小米')){
+                $name=$obj->Content;
+                $data=PhoneModel::where(['name'=>$name])->first()->toArray();
+                //dump($data);
+                if(!$data){
+                    $data=PhoneModel::orderby('up_time','desc')->first()->toArray();
+                }
+                $img=$data['img'];
+                $picurl="http://1809niuyuechyuang.comcto.com/goodsimg/".$img;
+                $res='<xml>
+                          <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                          <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                          <CreateTime>'.time().'</CreateTime>
+                          <MsgType><![CDATA[news]]></MsgType>
+                          <ArticleCount>1</ArticleCount>
+                          <Articles>
+                            <item>
+                              <Title><![CDATA['.$data['name'].']]></Title>
+                              <Description><![CDATA[你说小米，我说6 oy]]></Description>
+                              <PicUrl><![CDATA['.$picurl.']]></PicUrl>
+                              <Url><![CDATA[http://1809niuyuechyuang.comcto.com/wx/phoneDetail?id='.$data['id'].']]></Url>
+                            </item>
+                          </Articles>
+                        </xml>';
+                echo $res;
+            }
+            //查询城市天气
+            if(strpos($obj->Content,'+天气')){
+                $city=explode('+',$obj->Content)[0];
+                //$url="https://free-api.heweather.net/s6/weather/now?location=".$city."&key=HE1905052041271004";
+                $url="http://api.k780.com?app=weather.future&weaid=".$city."&appkey=42246&sign=94cfdcf87e9594bdbc981a6e349fd50f&format=json";
+                $res=file_get_contents($url);
+                $arr=json_decode($res,true);
+                if($arr['success']==0){
+                    echo '<xml>
+                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>'.time().'</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[城市错误]]></Content>
+                          </xml>';
+                }elseif($arr['success']==1){
+                    $str='';
+                    foreach($arr['result'] as $k=>$v){
+                        $days=$v['days'];
+                        $week=$v['week'];
+                        $city=$v['citynm'];// 	该地区／城市的上级城市
+                        $tmp=$v['temperature'];//温度
+                        $cond_txt=$v['weather'];//天气状况
+                        $wind_dir=$v['wind'];//风向
+                        $wind_sc=$v['winp'];//风力
+                        $str.="日期：".$days. $week."\n"."城市名称：".$city."\n"."温度：".$tmp."\n"."天气状况：".$cond_txt."\n".
+                            "风向：".$wind_dir."\n". "风力：". $wind_sc."\n"."\n";
+                    }
+                    echo '<xml>
+                            <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                            <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                            <CreateTime>'.time().'</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA['.$str.']]></Content>
+                          </xml>';
+                }
+            }
+            //回复文本
+            $stu_name=[
+                '牛月闯',
+                '王威龙',
+                '张三',
+                '李四',
+                '王五',
+                '赵六',
+            ];
+            if($obj->Content==1){
+                $str=implode("\n",$stu_name);
+                $this->sendTextMsg($openid,$str);
+            }elseif($obj->Content==2){
+                $num=count($stu_name);
+                $rand_num=rand(0,$num-1);
+                $str=$stu_name[$rand_num];
+                $this->sendTextMsg($openid,$str);
+            }elseif($obj->Content=='图片'){
+                //回复图片
+                echo '<xml>
+                      <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                      <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                      <CreateTime>'.time().'</CreateTime>
+                      <MsgType><![CDATA[image]]></MsgType>
+                      <Image>
+                        <MediaId><![CDATA[0OX-rmhHOdhBzCZmOSlTJ-KUIUVRl6L_hWx5O9woHi3raTu8Z5MwcNrpOcg1Pe4Z]]></MediaId>
+                      </Image>
+                    </xml>';
+            }else{
+                //机器人
+                $info=$obj->Content;
+                $url="http://www.tuling123.com/openapi/api?key=1029047843994443a4f7aae786cb3cbe&info=".$info;
+                $res=file_get_contents($url);
+                $arr=json_decode($res,true);
+                $this->sendTextMsg($openid,$arr['text']);
+            }
+        }
         //图片消息
-//        if($msg_type=='image'){
-//            //$media_id=DB::select('SELECT media_id FROM material ORDER BY RAND() LIMIT 1');
-//            $media_id=MaterialModel::orderByRaw("RAND()")->first()->media_id;
-//            //dd($media_id);die;
-//            //回复图片
-//            echo '<xml>
-//                  <ToUserName><![CDATA['.$openid.']]></ToUserName>
-//                  <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-//                  <CreateTime>'.time().'</CreateTime>
-//                  <MsgType><![CDATA[image]]></MsgType>
-//                  <Image>
-//                    <MediaId><![CDATA['.$media_id.']]></MediaId>
-//                  </Image>
-//                </xml>';
-//        }
+        if($msg_type=='image'){
+            //$media_id=DB::select('SELECT media_id FROM material ORDER BY RAND() LIMIT 1');
+            $media_id=MaterialModel::orderByRaw("RAND()")->first()->media_id;
+            //dd($media_id);die;
+            //回复图片
+            echo '<xml>
+                  <ToUserName><![CDATA['.$openid.']]></ToUserName>
+                  <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+                  <CreateTime>'.time().'</CreateTime>
+                  <MsgType><![CDATA[image]]></MsgType>
+                  <Image>
+                    <MediaId><![CDATA['.$media_id.']]></MediaId>
+                  </Image>
+                </xml>';
+        }
     }
-    //创建菜单
-    public function createMent(){
-        //接口数据
-        $post_arr=[
-            'button' => [
-                [
-                    'type'=>'click',
-                    'name'=>'功能说明',
-                    'key'=>'function declaration',
-                ],
-                [   'name'=>'娱乐',
-                    'sub_button'=> [
-                        [
-                            'type'=>'view',
-                            'name'=>'王者荣耀官网',
-                            'url'=>'https://pvp.qq.com/',
-                        ],
-                        [
-                            "type"=>"pic_weixin",
-                            "name"=>"发送图片",
-                            "key"=>"sendPic",
-                        ]
-                    ],
-                ],
-            ],
-        ];
-        $json_str=json_encode($post_arr, JSON_UNESCAPED_UNICODE);   //加参数二可处理含中文的数组
-        //dd($json_str);die;
-        $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->getAccessToken();
-        //请求接口
-        $client= new Client();
-        $responce=$client->request('POST',$url,[
-            'body'=>$json_str
-        ]);
-        //处理响应
-        $res_str=$responce->getBody();
-        $arr=json_decode($res_str,true);
-        dd($arr);
-    }
+
     //表白墙记录上一步动作的返回数据
     public function act($openid,$str){
         $arr=[
@@ -592,17 +557,50 @@ class WxController extends Controller
 //        $responce=$client->request('POST',$url,[
 //            'body'=>$json_str
 //        ]);
-//        //dd($responce);die;
 //        //处理响应
 //        //$res_str=$responce->getBody();
-//        //dd($res_str);
 //        //$arr=json_decode($res_str,true);
 //        //dd($arr);
-////        if($arr['errcode']==0){
-////            echo "创建菜单成功";
-////        }else{
-////            echo '创建菜单失败';
-////        }
+//    }
+
+//创建菜单
+//    public function createMent(){
+//        //接口数据
+//        $post_arr=[
+//            'button' => [
+//                [
+//                    'type'=>'click',
+//                    'name'=>'功能说明',
+//                    'key'=>'function declaration',
+//                ],
+//                [   'name'=>'娱乐',
+//                    'sub_button'=> [
+//                        [
+//                            'type'=>'view',
+//                            'name'=>'王者荣耀官网',
+//                            'url'=>'https://pvp.qq.com/',
+//                        ],
+//                        [
+//                            "type"=>"pic_weixin",
+//                            "name"=>"发送图片",
+//                            "key"=>"sendPic",
+//                        ]
+//                    ],
+//                ],
+//            ],
+//        ];
+//        $json_str=json_encode($post_arr, JSON_UNESCAPED_UNICODE);   //加参数二可处理含中文的数组
+//        //dd($json_str);die;
+//        $url= 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->getAccessToken();
+//        //请求接口
+//        $client= new Client();
+//        $responce=$client->request('POST',$url,[
+//            'body'=>$json_str
+//        ]);
+//        //处理响应
+//        $res_str=$responce->getBody();
+//        $arr=json_decode($res_str,true);
+//        dd($arr);
 //    }
 
     //微信网页授权（手机点击）
