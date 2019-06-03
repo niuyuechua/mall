@@ -60,23 +60,23 @@ class WxController extends Controller
         $openid=$obj->FromUserName; //发送方OpenID
         $msg_type=$obj->MsgType;    //消息类型（包括事件）
         $event=$obj->Event;    //事件类型（消息类型为事件时，有此字段）
-        if($msg_type=='text'){
-            $keyword=trim($obj->Content);
-            $media_id=ReplyModel::where(['keyword'=>$keyword])->value('media_id');
-            //dd($media_id);die;
-            //回复图片
-            echo '<xml>
-                  <ToUserName><![CDATA['.$openid.']]></ToUserName>
-                  <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
-                  <CreateTime>'.time().'</CreateTime>
-                  <MsgType><![CDATA[image]]></MsgType>
-                  <Image>
-                    <MediaId><![CDATA['.$media_id.']]></MediaId>
-                  </Image>
-                </xml>';
-        }
 
         //第八个月（2）月考
+//        if($msg_type=='text'){
+//            $keyword=trim($obj->Content);
+//            $media_id=ReplyModel::where(['keyword'=>$keyword])->value('media_id');
+//            //dd($media_id);die;
+//            //回复图片
+//            echo '<xml>
+//                  <ToUserName><![CDATA['.$openid.']]></ToUserName>
+//                  <FromUserName><![CDATA['.$kf_id.']]></FromUserName>
+//                  <CreateTime>'.time().'</CreateTime>
+//                  <MsgType><![CDATA[image]]></MsgType>
+//                  <Image>
+//                    <MediaId><![CDATA['.$media_id.']]></MediaId>
+//                  </Image>
+//                </xml>';
+//        }
 //        if($msg_type=='event'){
 //            $event_key=$obj->EventKey;
 //            if($event=='CLICK' && $event_key=='function declaration'){
