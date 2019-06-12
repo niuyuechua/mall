@@ -83,6 +83,7 @@ class TaglistController extends Controller
     protected function grid()
     {
         $grid = new Grid(new TagModel);
+        $grid->model()->orderBy('t_id', 'desc');
 
         $grid->t_id('T id');
         $grid->tag_name('标签名称');

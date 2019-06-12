@@ -123,7 +123,7 @@ class MaterialController extends Controller
 //        $post_data=[
 //            'media'=>$imgPath
 //        ];
-//        $data=$this->curlPost($url,$imgPath);
+//        $data=$this->curlPost($url,$post_data);
 //        dump($data);die;
 
         //guzzle上传临时素材
@@ -133,7 +133,7 @@ class MaterialController extends Controller
             $response = $client->request('post',$url,[
                 'multipart' => [
                     [
-                        'name' => 'filename',
+                        'name' => 'file',
                         'contents' => fopen($res,'r'),      //通过POST表单来调用接口（$res）
                         'description'=>'{"title":永久视频素材,"introduction":永久视频素材需要POST另一个表单}'
                     ]
@@ -143,7 +143,7 @@ class MaterialController extends Controller
             $response = $client->request('post',$url,[
                 'multipart' => [
                     [
-                        'name' => 'filename',
+                        'name' => 'file',
                         'contents' => fopen($res,'r'),
                     ]
                 ]
